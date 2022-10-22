@@ -1,0 +1,11 @@
+.vscode/
+
+*.exe
+*.ilk
+*.obj
+*.pdb
+
+examples/**/*.actual
+examples/**/*.bash
+examples/**/*.expected
+examples/**/*.md
