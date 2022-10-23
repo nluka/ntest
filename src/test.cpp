@@ -107,7 +107,7 @@ void test::internal::throw_if_file_not_open(
 }
 
 template <typename Ty>
-requires test::primitive<Ty>
+requires test::concepts::primitive<Ty>
 void assert_primitive(
   Ty const expected, Ty const actual,
   source_location const &loc)

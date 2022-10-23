@@ -1,6 +1,7 @@
 #ifndef NLUKA_TEST_HPP
 #define NLUKA_TEST_HPP
 
+#include <array>
 #include <concepts>
 #include <fstream>
 #include <functional>
@@ -20,6 +21,19 @@ namespace config {
   void set_max_arr_preview_len(size_t);
 
 } // namespace config
+
+namespace concepts {
+
+  template <typename Ty>
+  concept primitive = std::integral<Ty> || std::floating_point<Ty>;
+
+  template <typename Ty>
+  concept comparable_neq = requires(Ty a, Ty b) { a != b; };
+
+  template <typename Ty>
+  concept printable = requires(std::ostream os, Ty obj) { os << obj; };
+
+} // namespace concepts
 
 namespace internal {
 
@@ -51,7 +65,7 @@ namespace internal {
     std::stringstream &&, std::source_location const &);
 
   template <typename Ty>
-  requires test::printable<Ty>
+  requires concepts::printable<Ty>
   void write_arr_to_file(std::string const &pathname,
     Ty const *const arr, size_t const size)
   {
@@ -166,16 +180,7 @@ void serialize_arr_preview(
 }
 
 template <typename Ty>
-concept primitive = std::integral<Ty> || std::floating_point<Ty>;
-
-template <typename Ty>
-concept comparable_neq = requires(Ty a, Ty b) { a != b; };
-
-template <typename Ty>
-concept printable = requires(std::ostream os, Ty obj) { os << obj; };
-
-template <typename Ty>
-requires comparable_neq<Ty> && printable<Ty>
+requires concepts::comparable_neq<Ty> && concepts::printable<Ty>
 void assert_arr(
   Ty const *const expected, size_t const expected_size,
   Ty const *const actual, size_t const actual_size,
@@ -224,7 +229,7 @@ void assert_arr(
 }
 
 template <typename Ty>
-requires comparable_neq<Ty> && printable<Ty>
+requires concepts::comparable_neq<Ty> && concepts::printable<Ty>
 void assert_stdvec(
   std::vector<Ty> const &expected,
   std::vector<Ty> const &actual,
@@ -235,6 +240,45 @@ void assert_stdvec(
 
   std::stringstream serialized_vals{};
   serialized_vals << "std::vector\\<" << typeid(Ty).name() << "\\> | ";
+
+  if (passed)
+  {
+    serialize_arr_preview(expected.data(), expected.size(), serialized_vals);
+    test::internal::emplace_assertion_passed_container(
+      std::move(serialized_vals), loc);
+  }
+  else // failed
+  {
+    std::string const
+      expected_pathname = internal::generate_file_pathname(loc, "expected"),
+      actual_pathname = internal::generate_file_pathname(loc, "actual");
+
+    test::internal::write_arr_to_file(
+      expected_pathname, expected.data(), expected.size());
+    test::internal::write_arr_to_file(
+      actual_pathname, actual.data(), actual.size());
+
+    serialized_vals
+      << '[' << expected_pathname << "](" << expected_pathname
+      << ") | [" << actual_pathname << "](" << actual_pathname << ')';
+
+    test::internal::emplace_assertion_failed_container(
+      std::move(serialized_vals), loc);
+  }
+}
+
+template <typename Ty, size_t Size>
+requires concepts::comparable_neq<Ty> && concepts::printable<Ty>
+void assert_stdarr(
+  std::array<Ty, Size> const &expected,
+  std::array<Ty, Size> const &actual,
+  std::source_location const loc = std::source_location::current())
+{
+  bool const passed = test::internal::arr_eq(
+    expected.data(), expected.size(), actual.data(), actual.size());
+
+  std::stringstream serialized_vals{};
+  serialized_vals << "std::array\\<" << typeid(Ty).name() << "\\> | ";
 
   if (passed)
   {
