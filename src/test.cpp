@@ -13,19 +13,15 @@ using std::vector;
 using std::source_location;
 using std::stringstream;
 using std::runtime_error;
+using test::internal::assertion;
 
-struct assertion
-{
-  string serialized_vals;
-  source_location loc;
-};
-
-static vector<assertion> s_failed_primitive_asserts{};
-static vector<assertion> s_passed_primitive_asserts{};
-static vector<assertion> s_failed_container_asserts{};
-static vector<assertion> s_passed_container_asserts{};
+static vector<assertion> s_failed_primitive_assertions{};
+static vector<assertion> s_passed_primitive_assertions{};
+static vector<assertion> s_failed_container_assertions{};
+static vector<assertion> s_passed_container_assertions{};
 static string s_output_path = ".";
 static size_t s_max_str_preview_len = 20;
+static size_t s_max_arr_preview_len = 10;
 static std::pair<char, char> constexpr s_special_chars[] {
   { '\a', 'a' },
   { '\b', 'b' },
@@ -47,13 +43,60 @@ void test::config::set_max_str_preview_len(size_t const len)
   s_max_str_preview_len = len;
 }
 
+void test::config::set_max_arr_preview_len(size_t const len)
+{
+  s_max_arr_preview_len = len;
+}
+
 size_t test::internal::max_str_preview_len()
 {
   return s_max_str_preview_len;
 }
 
-static
-void throw_if_file_not_open(FILE const *const file, char const *const pathname)
+size_t test::internal::max_arr_preview_len()
+{
+  return s_max_arr_preview_len;
+}
+
+void test::internal::emplace_assertion_failed_container(
+  stringstream &&ss, source_location const &loc)
+{
+  s_failed_container_assertions.emplace_back(ss.str(), loc);
+}
+
+void test::internal::emplace_assertion_failed_primitive(
+  stringstream &&ss, source_location const &loc)
+{
+  s_failed_primitive_assertions.emplace_back(ss.str(), loc);
+}
+
+void test::internal::emplace_assertion_passed_container(
+  stringstream &&ss, source_location const &loc)
+{
+  s_passed_container_assertions.emplace_back(ss.str(), loc);
+}
+
+void test::internal::emplace_assertion_passed_primitive(
+  stringstream &&ss, source_location const &loc)
+{
+  s_passed_primitive_assertions.emplace_back(ss.str(), loc);
+}
+
+string test::internal::generate_file_pathname(
+  std::source_location const &loc, char const *const extension)
+{
+  stringstream ss{};
+
+  ss
+    << fs::path(loc.file_name()).filename().string() << '@'
+    << loc.function_name() << '(' << loc.line() << ',' << loc.column() << ')'
+    << '.' << extension;
+
+  return ss.str();
+}
+
+void test::internal::throw_if_file_not_open(
+  FILE const *const file, char const *const pathname)
 {
   if (file == nullptr)
   {
@@ -81,14 +124,17 @@ void assert_primitive(
     << std::to_string(expected);
 
   if (passed)
-    s_passed_primitive_asserts.emplace_back(serialized_vals.str(), loc);
-  else
+  {
+    test::internal::emplace_assertion_passed_primitive(
+      std::move(serialized_vals), loc);
+  }
+  else // failed
   {
     serialized_vals
       << " | " << std::to_string(actual)
       << " | " << std::to_string(diff);
-
-    s_failed_primitive_asserts.emplace_back(serialized_vals.str(), loc);
+    test::internal::emplace_assertion_failed_primitive(
+      std::move(serialized_vals), loc);
   }
 }
 
@@ -169,14 +215,12 @@ void serialize_str_preview(
       bool is_special = false;
 
       for (auto const [special, representation] : s_special_chars)
-      {
         if (ch == special)
         {
           is_special = true;
           ss << '\\' << representation; // print escaped version
           break;
         }
-      }
 
       if (!is_special)
         ss << ch; // print as is
@@ -211,36 +255,26 @@ void test::assert_cstr(
 {
   bool const passed = strcmp(expected, actual) == 0;
 
-  stringstream serialized_values{};
-  serialized_values << "char* | ";
+  stringstream serialized_vals{};
+  serialized_vals << "char* | ";
 
   if (passed)
   {
-    serialize_str_preview(expected, expected_len, serialized_values);
-    s_passed_container_asserts.emplace_back(serialized_values.str(), loc);
+    serialize_str_preview(expected, expected_len, serialized_vals);
+    internal::emplace_assertion_passed_container(
+      std::move(serialized_vals), loc);
   }
-  else
+  else // failed
   {
-    auto const generate_file_pathname = [&loc](
-      char const *const extension)
-    {
-      stringstream ss{};
-      ss
-        << fs::path(loc.file_name()).filename().string() << '@'
-        << loc.function_name() << '(' << loc.line() << ',' << loc.column() << ')'
-        << '.' << extension;
-      return ss.str();
-    };
-
     string const
-      expected_pathname = generate_file_pathname("expected"),
-      actual_pathname = generate_file_pathname("actual");
+      expected_pathname = internal::generate_file_pathname(loc, "expected"),
+      actual_pathname = internal::generate_file_pathname(loc, "actual");
 
     auto const write_file = [&options](
       string const &pathname, char const *str, size_t const len)
     {
       FILE *const file = fopen(pathname.c_str(), "w");
-      throw_if_file_not_open(file, pathname.c_str());
+      internal::throw_if_file_not_open(file, pathname.c_str());
 
       if (!options.escape_special_chars)
       {
@@ -254,7 +288,6 @@ void test::assert_cstr(
         bool is_special = false;
 
         for (auto const &pair : s_special_chars)
-        {
           if (ch == pair.first)
           {
             is_special = true;
@@ -262,21 +295,23 @@ void test::assert_cstr(
             fputc(pair.second, file);
             break;
           }
-        }
 
         if (!is_special)
           fputc(ch, file);
       }
+
+      fclose(file);
     };
 
     write_file(expected_pathname, expected, expected_len);
     write_file(actual_pathname, actual, actual_len);
 
-    serialized_values
+    serialized_vals
       << '[' << expected_pathname << "](" << expected_pathname
       << ") | [" << actual_pathname << "](" << actual_pathname << ')';
 
-    s_failed_container_asserts.emplace_back(serialized_values.str(), loc);
+    internal::emplace_assertion_failed_container(
+      std::move(serialized_vals), loc);
   }
 }
 
@@ -301,9 +336,9 @@ void test::generate_report(char const *const name)
     pathname.append(".md");
 
     FILE *const f = fopen(pathname.c_str(), "w");
-    throw_if_file_not_open(f, pathname.c_str());
+    internal::throw_if_file_not_open(f, pathname.c_str());
 
-    printf("generating report `%s`... ", pathname.c_str());
+    printf("generating report \"%s\"... ", pathname.c_str());
 
     return f;
   }();
@@ -312,18 +347,18 @@ void test::generate_report(char const *const name)
   fprintf(file, "|   |   |\n");
   fprintf(file, "| - | - |\n");
   fprintf(file, "| failed | %zu |\n",
-    s_failed_primitive_asserts.size() + s_failed_container_asserts.size());
+    s_failed_primitive_assertions.size() + s_failed_container_assertions.size());
   fprintf(file, "| passed | %zu |\n",
-    s_passed_primitive_asserts.size() + s_passed_container_asserts.size());
+    s_passed_primitive_assertions.size() + s_passed_container_assertions.size());
   fprintf(file, "\n");
 
-  if (s_failed_primitive_asserts.size() > 0)
+  if (s_failed_primitive_assertions.size() > 0)
   {
     fprintf(file, "## ❌ failed (primitive)\n\n");
     fprintf(file, "| type | expected | actual | diff | location (func:ln,col) | file |\n");
     fprintf(file, "| - | - | - | - | - | - |\n");
 
-    for (auto const &[serialized_vals, loc] : s_failed_primitive_asserts)
+    for (auto const &[serialized_vals, loc] : s_failed_primitive_assertions)
     {
       fprintf(file, "| %s | %s:%zu,%zu | [%s](%s) |\n",
         serialized_vals.c_str(),
@@ -334,13 +369,13 @@ void test::generate_report(char const *const name)
     fprintf(file, "\n");
   }
 
-  if (s_failed_container_asserts.size() > 0)
+  if (s_failed_container_assertions.size() > 0)
   {
     fprintf(file, "## ❌ failed (container)\n\n");
     fprintf(file, "| type | expected | actual | location (func:ln,col) | file |\n");
     fprintf(file, "| - | - | - | - | - |\n");
 
-    for (auto const &[serialized_vals, loc] : s_failed_container_asserts)
+    for (auto const &[serialized_vals, loc] : s_failed_container_assertions)
     {
       fprintf(file, "| %s | %s:%zu,%zu | [%s](%s) |\n",
         serialized_vals.c_str(),
@@ -351,13 +386,13 @@ void test::generate_report(char const *const name)
     fprintf(file, "\n");
   }
 
-  if (s_passed_primitive_asserts.size() > 0)
+  if (s_passed_primitive_assertions.size() > 0)
   {
     fprintf(file, "## ✅ passed (primitive)\n\n");
     fprintf(file, "| type | expected | location (func:ln,col) | file |\n");
     fprintf(file, "| - | - | - | - |\n");
 
-    for (auto const &[serialized_vals, loc] : s_passed_primitive_asserts)
+    for (auto const &[serialized_vals, loc] : s_passed_primitive_assertions)
     {
       fprintf(file, "| %s | %s:%zu,%zu | [%s](%s) |\n",
         serialized_vals.c_str(),
@@ -368,13 +403,13 @@ void test::generate_report(char const *const name)
     fprintf(file, "\n");
   }
 
-  if (s_passed_container_asserts.size() > 0)
+  if (s_passed_container_assertions.size() > 0)
   {
     fprintf(file, "## ✅ passed (container)\n\n");
     fprintf(file, "| type | expected | location (func:ln,col) | file |\n");
     fprintf(file, "| - | - | - | - |\n");
 
-    for (auto const &[serialized_vals, loc] : s_passed_container_asserts)
+    for (auto const &[serialized_vals, loc] : s_passed_container_assertions)
     {
       fprintf(file, "| %s | %s:%zu,%zu | [%s](%s) |\n",
         serialized_vals.c_str(),
@@ -389,8 +424,8 @@ void test::generate_report(char const *const name)
   printf("done\n");
 
   // reset state to allow user to generate multiple independent reports
-  s_failed_primitive_asserts.clear();
-  s_passed_primitive_asserts.clear();
-  s_failed_container_asserts.clear();
-  s_passed_container_asserts.clear();
+  s_failed_primitive_assertions.clear();
+  s_passed_primitive_assertions.clear();
+  s_failed_container_assertions.clear();
+  s_passed_container_assertions.clear();
 }
