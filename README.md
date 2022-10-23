@@ -19,7 +19,7 @@ Table of contents:
   - containers:
     - `char*` strings
     - `std::string`
-    <!-- - `T[]` -->
-    <!-- - `std::vector` -->
+    - `T[]`
+    - `std::vector`
     <!-- - `std::array` -->
   <!-- - files (text or binary) -->

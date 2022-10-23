@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "customer.hpp"
+#include "../customer.hpp"
 #include "../../src/test.hpp"
 
 template <typename ElemTy, size_t Length>

@@ -50,6 +50,34 @@ namespace internal {
   void emplace_assertion_failed_container(
     std::stringstream &&, std::source_location const &);
 
+  template <typename Ty>
+  requires test::printable<Ty>
+  void write_arr_to_file(std::string const &pathname,
+    Ty const *const arr, size_t const size)
+  {
+    FILE *const file = fopen(pathname.c_str(), "w");
+    test::internal::throw_if_file_not_open(file, pathname.c_str());
+
+    std::ofstream out(file);
+
+    for (size_t i = 0; i < size; ++i)
+      out << arr[i] << '\n';
+  }
+
+  template <typename Ty>
+  bool arr_eq(Ty const *const a1, size_t const a1_size,
+    Ty const *const a2, size_t const a2_size)
+  {
+    if (a1_size != a2_size)
+      return false;
+
+    for (size_t i = 0; i < a1_size; ++i)
+      if (a1[i] != a2[i])
+        return false;
+
+    return true;
+  }
+
 } // namespace internal
 
 void assert_int8(
@@ -125,13 +153,11 @@ void serialize_arr_preview(
   if (size == 0)
     return;
 
-  ss << " __[__ ` ";
+  ss << " __[__ ";
 
   size_t const max_len = std::min(size, test::internal::max_arr_preview_len());
   for (size_t i = 0; i < max_len; ++i)
-    ss << arr[i] << ' ';
-
-  ss << "` ";
+    ss << '`' << arr[i] << "`, ";
 
   if (size > max_len)
     ss << "*... " << (size - max_len) << " more* ";
@@ -155,19 +181,12 @@ void assert_arr(
   Ty const *const actual, size_t const actual_size,
   std::source_location const loc = std::source_location::current())
 {
-  bool passed = true;
-  if (actual_size != expected_size)
-    passed = false;
-  else
-    for (size_t i = 0; i < expected_size; ++i)
-      if (actual[i] != expected[i])
-      {
-        passed = false;
-        break;
-      }
+  bool const passed = test::internal::arr_eq(
+    expected, expected_size, actual, actual_size);
 
   std::stringstream serialized_vals{};
   serialized_vals << typeid(Ty).name() << " [] | ";
+
   if (passed)
   {
     serialize_arr_preview(expected, expected_size, serialized_vals);
@@ -204,10 +223,44 @@ void assert_arr(
   }
 }
 
-// TODO:
-// assert_stdarr
-// assert_stdvec
-// ...
+template <typename Ty>
+requires comparable_neq<Ty> && printable<Ty>
+void assert_stdvec(
+  std::vector<Ty> const &expected,
+  std::vector<Ty> const &actual,
+  std::source_location const loc = std::source_location::current())
+{
+  bool const passed = test::internal::arr_eq(
+    expected.data(), expected.size(), actual.data(), actual.size());
+
+  std::stringstream serialized_vals{};
+  serialized_vals << "std::vector\\<" << typeid(Ty).name() << "\\> | ";
+
+  if (passed)
+  {
+    serialize_arr_preview(expected.data(), expected.size(), serialized_vals);
+    test::internal::emplace_assertion_passed_container(
+      std::move(serialized_vals), loc);
+  }
+  else // failed
+  {
+    std::string const
+      expected_pathname = internal::generate_file_pathname(loc, "expected"),
+      actual_pathname = internal::generate_file_pathname(loc, "actual");
+
+    test::internal::write_arr_to_file(
+      expected_pathname, expected.data(), expected.size());
+    test::internal::write_arr_to_file(
+      actual_pathname, actual.data(), actual.size());
+
+    serialized_vals
+      << '[' << expected_pathname << "](" << expected_pathname
+      << ") | [" << actual_pathname << "](" << actual_pathname << ')';
+
+    test::internal::emplace_assertion_failed_container(
+      std::move(serialized_vals), loc);
+  }
+}
 
 void generate_report(char const *name);
 
