@@ -276,6 +276,11 @@ int main()
     test::assert_text_file("./files/expected.txt", "./files/does_not_exist.txt");
 
     // binary files
+    test::assert_binary_file("./files/expected.bin", "./files/a.bin");
+    test::assert_binary_file("./files/expected.bin", "./files/b.bin");
+    test::assert_binary_file("./files/expected.bin", "./files/expected.bin");
+    test::assert_binary_file("./files/does_not_exist.bin", "./files/a.bin");
+    test::assert_binary_file("./files/expected.bin", "./files/does_not_exist.bin");
 
     test::generate_report("example");
   }

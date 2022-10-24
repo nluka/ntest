@@ -331,6 +331,18 @@ void assert_text_file(
 );
 
 void assert_binary_file(
+  char const *expected_pathname,
+  char const *actual_pathname,
+  std::source_location loc = std::source_location::current()
+);
+
+void assert_binary_file(
+  std::string const &expected_pathname,
+  std::string const &actual_pathname,
+  std::source_location loc = std::source_location::current()
+);
+
+void assert_binary_file(
   std::filesystem::path const &expected,
   std::filesystem::path const &actual,
   std::source_location loc = std::source_location::current()

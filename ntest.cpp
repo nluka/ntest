@@ -470,11 +470,87 @@ void test::assert_text_file(
   }
 }
 
-// void test::assert_binary_file(
-//   fs::path const &expected, fs::path const &actual, source_location const loc)
-// {
+void test::assert_binary_file(
+  char const *const expected_pathname, char const *const actual_pathname,
+  source_location const loc)
+{
+  assert_binary_file(
+    fs::path(expected_pathname), fs::path(actual_pathname), loc);
+}
 
-// }
+void test::assert_binary_file(
+  string const &expected_pathname, string const &actual_pathname,
+  source_location const loc)
+{
+  assert_binary_file(
+    fs::path(expected_pathname), fs::path(actual_pathname), loc);
+}
+
+void test::assert_binary_file(
+  fs::path const &expected_pathname, fs::path const &actual_pathname,
+  source_location const loc)
+{
+  bool expected_exists, actual_exists;
+  {
+    std::error_code ec{};
+    expected_exists = fs::is_regular_file(expected_pathname, ec);
+    actual_exists = fs::is_regular_file(actual_pathname, ec);
+  }
+
+  string const
+    expected_pathname_generic = expected_pathname.generic_string(),
+    actual_pathname_generic = actual_pathname.generic_string();
+
+  vector<uint8_t> const expected = [
+    expected_exists, &expected_pathname_generic]()
+  {
+    if (expected_exists)
+      return extract_binary_file_contents(expected_pathname_generic);
+    else
+      return vector<uint8_t>();
+  }();
+
+  vector<uint8_t> const actual = [
+    actual_exists, &actual_pathname_generic]()
+  {
+    if (actual_exists)
+      return extract_binary_file_contents(actual_pathname_generic);
+    else
+      return vector<uint8_t>();
+  }();
+
+  bool const passed = expected_exists && actual_exists &&
+    internal::arr_eq(expected.data(), expected.size(),
+      actual.data(), actual.size());
+
+  stringstream serialized_vals{};
+
+  serialized_vals << "binary file | ";
+  if (!expected_exists)
+    serialized_vals << "<span style='color:red;'>not found</span>";
+  else
+  {
+    serialized_vals
+      << '[' << expected_pathname_generic << "]("
+      << expected_pathname_generic << ')';
+  }
+
+  if (passed)
+    internal::emplace_passed_assertion(std::move(serialized_vals), loc);
+  else // failed
+  {
+    serialized_vals << " | ";
+    if (!actual_exists)
+      serialized_vals << "<span style='color:red;'>not found</span>";
+    else
+    {
+      serialized_vals
+        << '[' << actual_pathname_generic << "]("
+        << actual_pathname_generic << ')';
+    }
+    internal::emplace_failed_assertion(std::move(serialized_vals), loc);
+  }
+}
 
 void test::generate_report(char const *const name)
 {
