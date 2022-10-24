@@ -1,4 +1,4 @@
-# test
+# ntest
 
 A simple and lightweight library for testing in C++20.
 
@@ -21,5 +21,5 @@ Table of contents:
     - `std::string`
     - `T[]`
     - `std::vector`
-    <!-- - `std::array` -->
-  <!-- - files (text or binary) -->
+    - `std::array`
+  - text files

@@ -4,8 +4,7 @@
 *.ilk
 *.obj
 *.pdb
+*.actual
+*.expected
 
-examples/**/*.actual
-examples/**/*.bash
-examples/**/*.expected
-examples/**/*.md
+example/*.md

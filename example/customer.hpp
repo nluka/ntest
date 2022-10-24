@@ -1,5 +1,5 @@
-#ifndef CUSTOMER_HPP
-#define CUSTOMER_HPP
+#ifndef EXAMPLE_CUSTOMER_HPP
+#define EXAMPLE_CUSTOMER_HPP
 
 #include <string>
 #include <ostream>
@@ -14,4 +14,4 @@ struct customer
   friend std::ostream& operator<<(std::ostream &, customer const &);
 };
 
-#endif // CUSTOMER_HPP
+#endif // EXAMPLE_CUSTOMER_HPP

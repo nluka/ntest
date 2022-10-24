@@ -44,24 +44,20 @@ namespace internal {
   std::string generate_file_pathname(
     std::source_location const &, char const *extension);
 
-  void throw_if_file_not_open(FILE const *, char const *pathname);
+  void throw_if_file_not_open(std::fstream const &, char const *pathname);
 
   struct assertion
   {
+    // for passed assertions: "type | expected"
+    // for failed assertions: "type | expected | actual"
     std::string serialized_vals;
     std::source_location loc;
   };
 
-  void emplace_assertion_passed_primitive(
+  void emplace_passed_assertion(
     std::stringstream &&, std::source_location const &);
 
-  void emplace_assertion_failed_primitive(
-    std::stringstream &&, std::source_location const &);
-
-  void emplace_assertion_passed_container(
-    std::stringstream &&, std::source_location const &);
-
-  void emplace_assertion_failed_container(
+  void emplace_failed_assertion(
     std::stringstream &&, std::source_location const &);
 
   template <typename Ty>
@@ -69,13 +65,11 @@ namespace internal {
   void write_arr_to_file(std::string const &pathname,
     Ty const *const arr, size_t const size)
   {
-    FILE *const file = fopen(pathname.c_str(), "w");
+    std::fstream file(pathname, std::ios::out);
     test::internal::throw_if_file_not_open(file, pathname.c_str());
 
-    std::ofstream out(file);
-
     for (size_t i = 0; i < size; ++i)
-      out << arr[i] << '\n';
+      file << arr[i] << '\n';
   }
 
   template <typename Ty>
@@ -90,6 +84,27 @@ namespace internal {
         return false;
 
     return true;
+  }
+
+  template <typename Ty>
+  void serialize_arr_preview(
+    Ty const *const arr, size_t const size, std::stringstream &ss)
+  {
+    ss << "sz=" << size;
+
+    if (size == 0)
+      return;
+
+    ss << " __[__ ";
+
+    size_t const max_len = std::min(size, test::internal::max_arr_preview_len());
+    for (size_t i = 0; i < max_len; ++i)
+      ss << '`' << arr[i] << "`, ";
+
+    if (size > max_len)
+      ss << "*... " << (size - max_len) << " more* ";
+
+    ss << "__]__";
   }
 
 } // namespace internal
@@ -139,9 +154,11 @@ struct str_opts
   bool escape_special_chars;
 };
 
+str_opts default_str_opts();
+
 void assert_cstr(
   char const *expected, char const *actual,
-  str_opts const &options = { true },
+  str_opts const &options = default_str_opts(),
   std::source_location loc = std::source_location::current()
 );
 
@@ -159,27 +176,6 @@ void assert_stdstr(
 );
 
 template <typename Ty>
-void serialize_arr_preview(
-  Ty const *const arr, size_t const size, std::stringstream &ss)
-{
-  ss << "sz=" << size;
-
-  if (size == 0)
-    return;
-
-  ss << " __[__ ";
-
-  size_t const max_len = std::min(size, test::internal::max_arr_preview_len());
-  for (size_t i = 0; i < max_len; ++i)
-    ss << '`' << arr[i] << "`, ";
-
-  if (size > max_len)
-    ss << "*... " << (size - max_len) << " more* ";
-
-  ss << "__]__";
-}
-
-template <typename Ty>
 requires concepts::comparable_neq<Ty> && concepts::printable<Ty>
 void assert_arr(
   Ty const *const expected, size_t const expected_size,
@@ -194,8 +190,8 @@ void assert_arr(
 
   if (passed)
   {
-    serialize_arr_preview(expected, expected_size, serialized_vals);
-    test::internal::emplace_assertion_passed_container(
+    test::internal::serialize_arr_preview(expected, expected_size, serialized_vals);
+    test::internal::emplace_passed_assertion(
       std::move(serialized_vals), loc);
   }
   else // failed
@@ -207,13 +203,11 @@ void assert_arr(
     auto const write_file = [](std::string const &pathname,
       Ty const *const arr, size_t const size)
     {
-      FILE *const file = fopen(pathname.c_str(), "w");
+      std::fstream file(pathname, std::ios::out);
       test::internal::throw_if_file_not_open(file, pathname.c_str());
 
-      std::ofstream out(file);
-
       for (size_t i = 0; i < size; ++i)
-        out << arr[i] << '\n';
+        file << arr[i] << '\n';
     };
 
     write_file(expected_pathname, expected, expected_size);
@@ -223,7 +217,7 @@ void assert_arr(
       << '[' << expected_pathname << "](" << expected_pathname
       << ") | [" << actual_pathname << "](" << actual_pathname << ')';
 
-    test::internal::emplace_assertion_failed_container(
+    test::internal::emplace_failed_assertion(
       std::move(serialized_vals), loc);
   }
 }
@@ -243,8 +237,9 @@ void assert_stdvec(
 
   if (passed)
   {
-    serialize_arr_preview(expected.data(), expected.size(), serialized_vals);
-    test::internal::emplace_assertion_passed_container(
+    test::internal::serialize_arr_preview(
+      expected.data(), expected.size(), serialized_vals);
+    test::internal::emplace_passed_assertion(
       std::move(serialized_vals), loc);
   }
   else // failed
@@ -262,7 +257,7 @@ void assert_stdvec(
       << '[' << expected_pathname << "](" << expected_pathname
       << ") | [" << actual_pathname << "](" << actual_pathname << ')';
 
-    test::internal::emplace_assertion_failed_container(
+    test::internal::emplace_failed_assertion(
       std::move(serialized_vals), loc);
   }
 }
@@ -278,12 +273,13 @@ void assert_stdarr(
     expected.data(), expected.size(), actual.data(), actual.size());
 
   std::stringstream serialized_vals{};
-  serialized_vals << "std::array\\<" << typeid(Ty).name() << "\\> | ";
+  serialized_vals << "std::array\\<" << typeid(Ty).name() << ", " << Size << "\\> | ";
 
   if (passed)
   {
-    serialize_arr_preview(expected.data(), expected.size(), serialized_vals);
-    test::internal::emplace_assertion_passed_container(
+    test::internal::serialize_arr_preview(
+      expected.data(), expected.size(), serialized_vals);
+    test::internal::emplace_passed_assertion(
       std::move(serialized_vals), loc);
   }
   else // failed
@@ -301,10 +297,44 @@ void assert_stdarr(
       << '[' << expected_pathname << "](" << expected_pathname
       << ") | [" << actual_pathname << "](" << actual_pathname << ')';
 
-    test::internal::emplace_assertion_failed_container(
+    test::internal::emplace_failed_assertion(
       std::move(serialized_vals), loc);
   }
 }
+
+struct text_file_opts
+{
+  bool canonicalize_newlines;
+};
+
+text_file_opts default_text_file_opts();
+
+void assert_text_file(
+  char const *expected_pathname,
+  char const *actual_pathname,
+  text_file_opts const &options = default_text_file_opts(),
+  std::source_location loc = std::source_location::current()
+);
+
+void assert_text_file(
+  std::string const &expected_pathname,
+  std::string const &actual_pathname,
+  text_file_opts const &options = default_text_file_opts(),
+  std::source_location loc = std::source_location::current()
+);
+
+void assert_text_file(
+  std::filesystem::path const &expected,
+  std::filesystem::path const &actual,
+  text_file_opts const &options = default_text_file_opts(),
+  std::source_location loc = std::source_location::current()
+);
+
+void assert_binary_file(
+  std::filesystem::path const &expected,
+  std::filesystem::path const &actual,
+  std::source_location loc = std::source_location::current()
+);
 
 void generate_report(char const *name);
 
