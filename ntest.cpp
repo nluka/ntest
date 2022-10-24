@@ -81,14 +81,14 @@ void test::internal::emplace_passed_assertion(
 string test::internal::generate_file_pathname(
   source_location const &loc, char const *const extension)
 {
-  stringstream ss{};
+  stringstream pathname{};
 
-  ss
+  pathname
     << fs::path(loc.file_name()).filename().generic_string() << '@'
     << loc.function_name() << '(' << loc.line() << ',' << loc.column() << ')'
     << '.' << extension;
 
-  return ss.str();
+  return pathname.str();
 }
 
 void test::internal::throw_if_file_not_open(
@@ -100,6 +100,21 @@ void test::internal::throw_if_file_not_open(
     err << "failed to open file `" << pathname << "`";
     throw runtime_error(err.str());
   }
+}
+
+string test::internal::beautify_typeid_name(char const *const name)
+{
+  std::pair<std::regex, char const *> const operations[] {
+    { std::regex(" +([<>])"), "$1" },
+    { std::regex(",([^ ])"), ", $1" },
+    { std::regex(" {2,}"), " " },
+  };
+
+  string pretty_name = name;
+  for (auto const &[regex, replacement] : operations)
+    pretty_name = std::regex_replace(pretty_name, regex, replacement);
+
+  return pretty_name;
 }
 
 template <typename Ty>
@@ -116,13 +131,11 @@ void assert_primitive(
 
   stringstream serialized_vals{};
   serialized_vals
-    << typeid(expected).name() << " | "
-    << std::to_string(expected);
+    << test::internal::beautify_typeid_name(typeid(expected).name())
+    << " | " << std::to_string(expected);
 
   if (passed)
-  {
     test::internal::emplace_passed_assertion(std::move(serialized_vals), loc);
-  }
   else // failed
   {
     serialized_vals << " | " << std::to_string(actual);

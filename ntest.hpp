@@ -107,6 +107,8 @@ namespace internal {
     ss << "__]__";
   }
 
+  std::string beautify_typeid_name(char const *name);
+
 } // namespace internal
 
 void assert_int8(
@@ -186,7 +188,9 @@ void assert_arr(
     expected, expected_size, actual, actual_size);
 
   std::stringstream serialized_vals{};
-  serialized_vals << typeid(Ty).name() << " [] | ";
+  serialized_vals
+    << test::internal::beautify_typeid_name(typeid(Ty).name())
+    << " [] | ";
 
   if (passed)
   {
@@ -233,7 +237,10 @@ void assert_stdvec(
     expected.data(), expected.size(), actual.data(), actual.size());
 
   std::stringstream serialized_vals{};
-  serialized_vals << "std::vector\\<" << typeid(Ty).name() << "\\> | ";
+  serialized_vals
+    << "std::vector\\<"
+    << test::internal::beautify_typeid_name(typeid(Ty).name())
+    << "\\> | ";
 
   if (passed)
   {
@@ -273,7 +280,10 @@ void assert_stdarr(
     expected.data(), expected.size(), actual.data(), actual.size());
 
   std::stringstream serialized_vals{};
-  serialized_vals << "std::array\\<" << typeid(Ty).name() << ", " << Size << "\\> | ";
+  serialized_vals
+    << "std::array\\<"
+    << test::internal::beautify_typeid_name(typeid(Ty).name())
+    << ", " << Size << "\\> | ";
 
   if (passed)
   {
