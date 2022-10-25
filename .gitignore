@@ -4,7 +4,7 @@
 *.ilk
 *.obj
 *.pdb
-*.actual
-*.expected
 
 advanced-example/*.md
+advanced-example/*.expected
+advanced-example/*.actual

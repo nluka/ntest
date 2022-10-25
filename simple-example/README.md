@@ -98,8 +98,8 @@ and the generated markdown report informs us of this failing assertion, as well 
 | type | expected | actual | location (func:ln,col) | file |
 | - | - | - | - | - |
 | int | 0 | 1 | main:6,10 | [./main.cpp](./main.cpp) |
-| char* | [main.cpp@main(9,10).expected](./main.cpp@main(9,10).expected) | [main.cpp@main(9,10).actual](./main.cpp@main(9,10).actual) | main:9,10 | [./main.cpp](./main.cpp) |
-| std::vector\<int\> | [main.cpp@main(15,12).expected](./main.cpp@main(15,12).expected) | [main.cpp@main(15,12).actual](./main.cpp@main(15,12).actual) | main:15,12 | [./main.cpp](./main.cpp) |
+| char* | [main.cpp@main(9,10).expected](main.cpp@main(9,10).expected) | [main.cpp@main(9,10).actual](main.cpp@main(9,10).actual) | main:9,10 | [./main.cpp](./main.cpp) |
+| std::vector\<int\> | [main.cpp@main(15,12).expected](main.cpp@main(15,12).expected) | [main.cpp@main(15,12).actual](main.cpp@main(15,12).actual) | main:15,12 | [./main.cpp](./main.cpp) |
 
 ### ✅ passed
 
