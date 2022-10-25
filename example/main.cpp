@@ -4,7 +4,7 @@
 #include "../ntest.hpp"
 
 template <typename Ty, size_t Length>
-constexpr
+consteval
 size_t len(Ty (&)[Length])
 {
   return Length;
