@@ -33,7 +33,7 @@ int main()
     ntest::assert_stdvec(a, b); // fail!
   }
 
-  ntest::generate_report("example");
+  ntest::generate_report("simple");
 }
 
 ```
@@ -69,8 +69,8 @@ ntest::assert_stdvec(a, b); // fail!  /* line 33 */
 ```
 
 generates the files:
-- `main.cpp@main(15,12).expected`
-- `main.cpp@main(15,12).actual`
+- [main.cpp@main(15,12).expected](main.cpp@main(15,12).expected)
+- [main.cpp@main(15,12).actual](main.cpp@main(15,12).actual)
 
 whose diff is:
 
@@ -82,7 +82,7 @@ whose diff is:
 3
 ```
 
-and the generated markdown report informs us of this failing assertion, as well as all the other assertions we made:
+and the generated markdown report [simple.md](#simple.md) informs us of this failing assertion, as well as all the other assertions we made:
 
 --- START OF GENERATED MARKDOWN REPORT ---
 
