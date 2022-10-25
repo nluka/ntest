@@ -1,5 +1,5 @@
 
-This example will walk through the basics of ntest.
+This example walks through the basics of ntest.
 
 To use ntest, copy [ntest.cpp](/ntest.cpp) and [ntest.hpp](/ntest.hpp) somewhere into your project, and create a translation unit for your tester program. In this example, our filesystem looks like:
 
@@ -13,7 +13,7 @@ ntest
     │  main.cpp
 ```
 
-`simple-example/main.cpp` is our tester program:
+`ntest/simple-example/main.cpp` is our tester program:
 
 ```cpp
 #include "../ntest.hpp"
@@ -38,7 +38,7 @@ int main()
 
 ```
 
-After compiling and running, the tester program generates a few files:
+After compiling and running the tester program, several files are generated:
 
 ```
 ntest
@@ -58,14 +58,14 @@ ntest
 ```
 
 - `simple.md` is a markdown report of our assertions
-- `*.{expected,actual}` are text files containing the serialized expected and actual value of a failed assertion - diff these tosee how the values differ
+- `*.{expected,actual}` are text files containing the serialized expected and actual value of a failed assertion - diff these to see how the values differ
 
 In this example, the assertion:
 
 ```cpp
-std::vector<int> a { 0, 1, 2, 3 };
-std::vector<int> b { 0, 1, 9, 3 };
-ntest::assert_stdvec(a, b); // fail!
+std::vector<int> a { 0, 1, 2, 3 };    /* line 30 */
+std::vector<int> b { 0, 1, 9, 3 };    /* line 31 */
+ntest::assert_stdvec(a, b); // fail!  /* line 33 */
 ```
 
 generates the files:
@@ -98,8 +98,8 @@ and the generated markdown report informs us of this failing assertion, as well 
 | type | expected | actual | location (func:ln,col) | file |
 | - | - | - | - | - |
 | int | 0 | 1 | main:6,10 | [./main.cpp](./main.cpp) |
-| char* | [main.cpp@main(9,10).expected](main.cpp@main(9,10).expected) | [main.cpp@main(9,10).actual](main.cpp@main(9,10).actual) | main:9,10 | [./main.cpp](./main.cpp) |
-| std::vector\<int\> | [main.cpp@main(15,12).expected](main.cpp@main(15,12).expected) | [main.cpp@main(15,12).actual](main.cpp@main(15,12).actual) | main:15,12 | [./main.cpp](./main.cpp) |
+| char* | [main.cpp@main(9,10).expected](./main.cpp@main(9,10).expected) | [main.cpp@main(9,10).actual](./main.cpp@main(9,10).actual) | main:9,10 | [./main.cpp](./main.cpp) |
+| std::vector\<int\> | [main.cpp@main(15,12).expected](./main.cpp@main(15,12).expected) | [main.cpp@main(15,12).actual](./main.cpp@main(15,12).actual) | main:15,12 | [./main.cpp](./main.cpp) |
 
 ### ✅ passed
 
