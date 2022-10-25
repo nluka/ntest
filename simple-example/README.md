@@ -13,7 +13,7 @@ ntest
     │  main.cpp
 ```
 
-`ntest/simple-example/main.cpp` is our tester program:
+[ntest/simple-example/main.cpp](main.cpp) is our tester program:
 
 ```cpp
 #include "../ntest.hpp"
@@ -63,9 +63,9 @@ ntest
 In this example, the assertion:
 
 ```cpp
-std::vector<int> a { 0, 1, 2, 3 };    /* line 30 */
-std::vector<int> b { 0, 1, 9, 3 };    /* line 31 */
-ntest::assert_stdvec(a, b); // fail!  /* line 33 */
+std::vector<int> a { 0, 1, 2, 3 };    /* line 12 */
+std::vector<int> b { 0, 1, 9, 3 };    /* line 13 */
+ntest::assert_stdvec(a, b); // fail!  /* line 15 */
 ```
 
 generates the files:
@@ -82,7 +82,7 @@ whose diff is:
 3
 ```
 
-and the generated markdown report [simple.md](#simple.md) informs us of this failing assertion, as well as all the other assertions we made:
+and the generated markdown report [simple.md](simple.md) informs us of this failing assertion, as well the other assertions we made:
 
 --- START OF GENERATED MARKDOWN REPORT ---
 
