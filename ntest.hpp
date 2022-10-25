@@ -10,7 +10,7 @@
 #include <string>
 #include <type_traits>
 
-namespace test {
+namespace ntest {
 
 namespace config {
 
@@ -63,16 +63,17 @@ namespace internal {
     Ty const *const arr, size_t const size)
   {
     std::fstream file(pathname, std::ios::out);
-    test::internal::throw_if_file_not_open(file, pathname.c_str());
+    ntest::internal::throw_if_file_not_open(file, pathname.c_str());
 
     for (size_t i = 0; i < size; ++i)
     {
       if constexpr (std::is_integral_v<Ty>)
         // some integrals like uint8_t are treated strangely by ostream insertion,
         // so convert to a string first to get around that
-        file << std::to_string(arr[i]) << '\n';
+        file << std::to_string(arr[i]);
       else
-        file << arr[i] << '\n';
+        file << arr[i];
+      file << '\n';
     }
   }
 
@@ -103,15 +104,17 @@ namespace internal {
 
     ss << " __[__ ";
 
-    size_t const max_len = std::min(size, test::internal::max_arr_preview_len());
+    size_t const max_len = std::min(size, ntest::internal::max_arr_preview_len());
     for (size_t i = 0; i < max_len; ++i)
     {
+      ss << '`';
       if constexpr (std::is_integral_v<Ty>)
         // some integrals like uint8_t are treated strangely by ostream insertion,
         // so convert to a string first to get around that
-        ss << '`' << std::to_string(arr[i]) << "`, ";
+        ss << std::to_string(arr[i]);
       else
-        ss << '`' << arr[i] << "`, ";
+        ss << arr[i];
+      ss << "`, ";
     }
 
     if (size > max_len)
@@ -197,19 +200,19 @@ void assert_arr(
   Ty const *const actual, size_t const actual_size,
   std::source_location const loc = std::source_location::current())
 {
-  bool const passed = test::internal::arr_eq(
+  bool const passed = ntest::internal::arr_eq(
     expected, expected_size, actual, actual_size);
 
   std::stringstream serialized_vals{};
   serialized_vals
-    << test::internal::beautify_typeid_name(typeid(Ty).name())
+    << ntest::internal::beautify_typeid_name(typeid(Ty).name())
     << " [] | ";
 
   if (passed)
   {
-    test::internal::serialize_arr_preview(
+    ntest::internal::serialize_arr_preview(
       expected, expected_size, serialized_vals);
-    test::internal::emplace_passed_assertion(
+    ntest::internal::emplace_passed_assertion(
       std::move(serialized_vals), loc);
   }
   else // failed
@@ -218,14 +221,14 @@ void assert_arr(
       expected_pathname = internal::generate_file_pathname(loc, "expected"),
       actual_pathname = internal::generate_file_pathname(loc, "actual");
 
-    test::internal::write_arr_to_file(expected_pathname, expected, expected_size);
-    test::internal::write_arr_to_file(actual_pathname, actual, actual_size);
+    ntest::internal::write_arr_to_file(expected_pathname, expected, expected_size);
+    ntest::internal::write_arr_to_file(actual_pathname, actual, actual_size);
 
     serialized_vals
       << '[' << expected_pathname << "](" << expected_pathname
       << ") | [" << actual_pathname << "](" << actual_pathname << ')';
 
-    test::internal::emplace_failed_assertion(
+    ntest::internal::emplace_failed_assertion(
       std::move(serialized_vals), loc);
   }
 }
@@ -236,20 +239,20 @@ void assert_stdvec(
   std::vector<Ty> const &expected, std::vector<Ty> const &actual,
   std::source_location const loc = std::source_location::current())
 {
-  bool const passed = test::internal::arr_eq(
+  bool const passed = ntest::internal::arr_eq(
     expected.data(), expected.size(), actual.data(), actual.size());
 
   std::stringstream serialized_vals{};
   serialized_vals
     << "std::vector\\<"
-    << test::internal::beautify_typeid_name(typeid(Ty).name())
+    << ntest::internal::beautify_typeid_name(typeid(Ty).name())
     << "\\> | ";
 
   if (passed)
   {
-    test::internal::serialize_arr_preview(
+    ntest::internal::serialize_arr_preview(
       expected.data(), expected.size(), serialized_vals);
-    test::internal::emplace_passed_assertion(
+    ntest::internal::emplace_passed_assertion(
       std::move(serialized_vals), loc);
   }
   else // failed
@@ -258,16 +261,16 @@ void assert_stdvec(
       expected_pathname = internal::generate_file_pathname(loc, "expected"),
       actual_pathname = internal::generate_file_pathname(loc, "actual");
 
-    test::internal::write_arr_to_file(
+    ntest::internal::write_arr_to_file(
       expected_pathname, expected.data(), expected.size());
-    test::internal::write_arr_to_file(
+    ntest::internal::write_arr_to_file(
       actual_pathname, actual.data(), actual.size());
 
     serialized_vals
       << '[' << expected_pathname << "](" << expected_pathname
       << ") | [" << actual_pathname << "](" << actual_pathname << ')';
 
-    test::internal::emplace_failed_assertion(
+    ntest::internal::emplace_failed_assertion(
       std::move(serialized_vals), loc);
   }
 }
@@ -278,20 +281,20 @@ void assert_stdarr(
   std::array<Ty, Size> const &expected, std::array<Ty, Size> const &actual,
   std::source_location const loc = std::source_location::current())
 {
-  bool const passed = test::internal::arr_eq(
+  bool const passed = ntest::internal::arr_eq(
     expected.data(), expected.size(), actual.data(), actual.size());
 
   std::stringstream serialized_vals{};
   serialized_vals
     << "std::array\\<"
-    << test::internal::beautify_typeid_name(typeid(Ty).name())
+    << ntest::internal::beautify_typeid_name(typeid(Ty).name())
     << ", " << Size << "\\> | ";
 
   if (passed)
   {
-    test::internal::serialize_arr_preview(
+    ntest::internal::serialize_arr_preview(
       expected.data(), expected.size(), serialized_vals);
-    test::internal::emplace_passed_assertion(
+    ntest::internal::emplace_passed_assertion(
       std::move(serialized_vals), loc);
   }
   else // failed
@@ -300,16 +303,16 @@ void assert_stdarr(
       expected_pathname = internal::generate_file_pathname(loc, "expected"),
       actual_pathname = internal::generate_file_pathname(loc, "actual");
 
-    test::internal::write_arr_to_file(
+    ntest::internal::write_arr_to_file(
       expected_pathname, expected.data(), expected.size());
-    test::internal::write_arr_to_file(
+    ntest::internal::write_arr_to_file(
       actual_pathname, actual.data(), actual.size());
 
     serialized_vals
       << '[' << expected_pathname << "](" << expected_pathname
       << ") | [" << actual_pathname << "](" << actual_pathname << ')';
 
-    test::internal::emplace_failed_assertion(
+    ntest::internal::emplace_failed_assertion(
       std::move(serialized_vals), loc);
   }
 }
@@ -356,6 +359,6 @@ void assert_binary_file(
 
 void generate_report(char const *name);
 
-} // namespace test
+} // namespace ntest
 
 #endif // NLUKA_NTEST_HPP

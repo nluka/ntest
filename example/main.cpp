@@ -14,84 +14,84 @@ int main()
 {
   try
   {
-    test::config::set_max_arr_preview_len(2);
-    test::config::set_max_str_preview_len(10);
+    ntest::config::set_max_arr_preview_len(2);
+    ntest::config::set_max_str_preview_len(10);
 
     // int8
-    test::assert_int8(INT8_MIN, INT8_MIN); // pass
-    test::assert_int8(INT8_MIN, INT8_MIN + 100); // fail
-    test::assert_int8(0, 8); // pass
-    test::assert_int8(0, 8); // fail
-    test::assert_int8(INT8_MAX, INT8_MAX); // pass
-    test::assert_int8(INT8_MAX, INT8_MAX - 22); // fail
+    ntest::assert_int8(INT8_MIN, INT8_MIN); // pass
+    ntest::assert_int8(INT8_MIN, INT8_MIN + 100); // fail
+    ntest::assert_int8(0, 8); // pass
+    ntest::assert_int8(0, 8); // fail
+    ntest::assert_int8(INT8_MAX, INT8_MAX); // pass
+    ntest::assert_int8(INT8_MAX, INT8_MAX - 22); // fail
 
     // uint8
-    test::assert_uint8(0, 0); // pass
-    test::assert_uint8(0, 1); // fail
-    test::assert_uint8(UINT8_MAX, UINT8_MAX); // pass
-    test::assert_uint8(UINT8_MAX, UINT8_MAX - 31); // fail
+    ntest::assert_uint8(0, 0); // pass
+    ntest::assert_uint8(0, 1); // fail
+    ntest::assert_uint8(UINT8_MAX, UINT8_MAX); // pass
+    ntest::assert_uint8(UINT8_MAX, UINT8_MAX - 31); // fail
 
     // int16
-    test::assert_int16(INT16_MIN, INT16_MIN); // pass
-    test::assert_int16(INT16_MIN, INT16_MIN + 100); // fail
-    test::assert_int16(0, 0); // pass
-    test::assert_int16(0, 42); // fail
-    test::assert_int16(INT16_MAX, INT16_MAX); // pass
-    test::assert_int16(INT16_MAX, INT16_MAX - 11); // fail
+    ntest::assert_int16(INT16_MIN, INT16_MIN); // pass
+    ntest::assert_int16(INT16_MIN, INT16_MIN + 100); // fail
+    ntest::assert_int16(0, 0); // pass
+    ntest::assert_int16(0, 42); // fail
+    ntest::assert_int16(INT16_MAX, INT16_MAX); // pass
+    ntest::assert_int16(INT16_MAX, INT16_MAX - 11); // fail
 
     // uint16
-    test::assert_uint16(0, 0); // pass
-    test::assert_uint16(0, 1); // fail
-    test::assert_uint16(UINT16_MAX, UINT16_MAX); // pass
-    test::assert_uint16(UINT16_MAX, UINT16_MAX - 444); // fail
+    ntest::assert_uint16(0, 0); // pass
+    ntest::assert_uint16(0, 1); // fail
+    ntest::assert_uint16(UINT16_MAX, UINT16_MAX); // pass
+    ntest::assert_uint16(UINT16_MAX, UINT16_MAX - 444); // fail
 
     // int32
-    test::assert_int32(INT32_MIN, INT32_MIN); // pass
-    test::assert_int32(INT32_MIN, INT32_MIN + 100); // fail
-    test::assert_int32(0, 0); // pass
-    test::assert_int32(0, 42); // fail
-    test::assert_int32(INT32_MAX, INT32_MAX); // pass
-    test::assert_int32(INT32_MAX, INT32_MAX - 1); // fail
+    ntest::assert_int32(INT32_MIN, INT32_MIN); // pass
+    ntest::assert_int32(INT32_MIN, INT32_MIN + 100); // fail
+    ntest::assert_int32(0, 0); // pass
+    ntest::assert_int32(0, 42); // fail
+    ntest::assert_int32(INT32_MAX, INT32_MAX); // pass
+    ntest::assert_int32(INT32_MAX, INT32_MAX - 1); // fail
 
     // uint32
-    test::assert_uint32(0, 0); // pass
-    test::assert_uint32(0, 1); // fail
-    test::assert_uint32(UINT32_MAX, UINT32_MAX); // pass
-    test::assert_uint32(UINT32_MAX, UINT32_MAX - 444); // fail
+    ntest::assert_uint32(0, 0); // pass
+    ntest::assert_uint32(0, 1); // fail
+    ntest::assert_uint32(UINT32_MAX, UINT32_MAX); // pass
+    ntest::assert_uint32(UINT32_MAX, UINT32_MAX - 444); // fail
 
     // int64
-    test::assert_int64(INT64_MIN, INT64_MIN); // pass
-    test::assert_int64(INT64_MIN, INT64_MIN + 100); // fail
-    test::assert_int64(0, 0); // pass
-    test::assert_int64(0, 42); // fail
-    test::assert_int64(INT64_MAX, INT64_MAX); // pass
-    test::assert_int64(INT64_MAX, INT64_MAX - 1001); // fail
+    ntest::assert_int64(INT64_MIN, INT64_MIN); // pass
+    ntest::assert_int64(INT64_MIN, INT64_MIN + 100); // fail
+    ntest::assert_int64(0, 0); // pass
+    ntest::assert_int64(0, 42); // fail
+    ntest::assert_int64(INT64_MAX, INT64_MAX); // pass
+    ntest::assert_int64(INT64_MAX, INT64_MAX - 1001); // fail
 
     // uint64_t
-    test::assert_uint64(0, 0); // pass
-    test::assert_uint64(0, 1); // fail
-    test::assert_uint64(UINT64_MAX, UINT64_MAX); // pass
-    test::assert_uint64(UINT64_MAX, UINT64_MAX - 42); // fail
+    ntest::assert_uint64(0, 0); // pass
+    ntest::assert_uint64(0, 1); // fail
+    ntest::assert_uint64(UINT64_MAX, UINT64_MAX); // pass
+    ntest::assert_uint64(UINT64_MAX, UINT64_MAX - 42); // fail
 
     // char*
     {
       char const *const hello_world = "Hello\nworld!";
       char const *const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-      test::assert_cstr(hello_world, "hello world!"); // fail
-      test::assert_cstr(hello_world, "Hello world"); // fail
-      test::assert_cstr(hello_world, hello_world); // pass
-      test::assert_cstr(hello_world, alphabet); // fail
-      test::assert_cstr(alphabet, alphabet); // pass
+      ntest::assert_cstr(hello_world, "hello world!"); // fail
+      ntest::assert_cstr(hello_world, "Hello world"); // fail
+      ntest::assert_cstr(hello_world, hello_world); // pass
+      ntest::assert_cstr(hello_world, alphabet); // fail
+      ntest::assert_cstr(alphabet, alphabet); // pass
     }
 
     // std::string
     {
       std::string const expected = "Testing code is important.";
 
-      test::assert_stdstr(expected, "Testing code is not important."); // fail
-      test::assert_stdstr(expected, "What is testing?"); // fail
-      test::assert_stdstr(expected, expected); // pass
+      ntest::assert_stdstr(expected, "Testing code is not important."); // fail
+      ntest::assert_stdstr(expected, "What is ntesting?"); // fail
+      ntest::assert_stdstr(expected, expected); // pass
     }
 
     // std::string with NULs
@@ -99,8 +99,8 @@ int main()
       std::stringstream ss{};
       ss << "Testing" << '\0' << "code" << '\0' << "is" << '\0' << "important.";
 
-      test::assert_stdstr("Testing code is important.", ss.str()); // fail
-      test::assert_stdstr(ss.str(), ss.str()); // pass
+      ntest::assert_stdstr("Testing code is important.", ss.str()); // fail
+      ntest::assert_stdstr(ss.str(), ss.str()); // pass
     }
 
     // int []
@@ -109,9 +109,9 @@ int main()
       int const a[]        { 1, 2, 3, 4 };
       int const b[]        { 0, 0, 0, 0 };
 
-      test::assert_arr(expected, len(expected), a, len(a)); // fail
-      test::assert_arr(expected, len(expected), b, len(b)); // fail
-      test::assert_arr(expected, len(expected), expected, len(expected)); // pass
+      ntest::assert_arr(expected, len(expected), a, len(a)); // fail
+      ntest::assert_arr(expected, len(expected), b, len(b)); // fail
+      ntest::assert_arr(expected, len(expected), expected, len(expected)); // pass
     }
 
     // customer []
@@ -137,10 +137,10 @@ int main()
         {"John", "Miller", 67},
       };
 
-      test::assert_arr(expected, len(expected), a, len(a)); // fail
-      test::assert_arr(expected, len(expected), b, len(b)); // fail
-      test::assert_arr(expected, len(expected), c, len(c)); // fail
-      test::assert_arr(expected, len(expected), expected, len(expected)); // pass
+      ntest::assert_arr(expected, len(expected), a, len(a)); // fail
+      ntest::assert_arr(expected, len(expected), b, len(b)); // fail
+      ntest::assert_arr(expected, len(expected), c, len(c)); // fail
+      ntest::assert_arr(expected, len(expected), expected, len(expected)); // pass
     }
 
     // std::vector<int>
@@ -149,9 +149,9 @@ int main()
       std::vector<int> const a        { 1, 2, 3, 4 };
       std::vector<int> const b        { 0, 0, 0, 0 };
 
-      test::assert_stdvec(expected, a); // fail
-      test::assert_stdvec(expected, b); // fail
-      test::assert_stdvec(expected, expected); // pass
+      ntest::assert_stdvec(expected, a); // fail
+      ntest::assert_stdvec(expected, b); // fail
+      ntest::assert_stdvec(expected, expected); // pass
     }
 
     // std::vector<customer>
@@ -177,10 +177,10 @@ int main()
         {"John", "Miller", 67},
       };
 
-      test::assert_stdvec(expected, a); // fail
-      test::assert_stdvec(expected, b); // fail
-      test::assert_stdvec(expected, c); // fail
-      test::assert_stdvec(expected, expected); // pass
+      ntest::assert_stdvec(expected, a); // fail
+      ntest::assert_stdvec(expected, b); // fail
+      ntest::assert_stdvec(expected, c); // fail
+      ntest::assert_stdvec(expected, expected); // pass
     }
 
     // std::vector<std::string>
@@ -201,12 +201,12 @@ int main()
       std::vector<std::string> const b {
         "What",
         "is",
-        "testing?",
+        "ntesting?",
       };
 
-      test::assert_stdvec(expected, a); // fail
-      test::assert_stdvec(expected, b); // fail
-      test::assert_stdvec(expected, expected); // pass
+      ntest::assert_stdvec(expected, a); // fail
+      ntest::assert_stdvec(expected, b); // fail
+      ntest::assert_stdvec(expected, expected); // pass
     }
 
     // std::array<int>
@@ -215,9 +215,9 @@ int main()
       std::array<int, 4> const a        { 1, 2, 3, 4 };
       std::array<int, 4> const b        { 0, 0, 0, 0 };
 
-      test::assert_stdarr(expected, a); // fail
-      test::assert_stdarr(expected, b); // fail
-      test::assert_stdarr(expected, expected); // pass
+      ntest::assert_stdarr(expected, a); // fail
+      ntest::assert_stdarr(expected, b); // fail
+      ntest::assert_stdarr(expected, expected); // pass
     }
 
     // std::array<customer>
@@ -238,9 +238,9 @@ int main()
         customer("Rob", "Robertson", 40),
       };
 
-      test::assert_stdarr(expected, a); // fail
-      test::assert_stdarr(expected, b); // fail
-      test::assert_stdarr(expected, expected); // pass
+      ntest::assert_stdarr(expected, a); // fail
+      ntest::assert_stdarr(expected, b); // fail
+      ntest::assert_stdarr(expected, expected); // pass
     }
 
     // std::array<std::string>
@@ -260,29 +260,29 @@ int main()
       std::array<std::string, 4> const b {
         "What",
         "is",
-        "testing?",
+        "ntesting?",
       };
 
-      test::assert_stdarr(expected, a); // fail
-      test::assert_stdarr(expected, b); // fail
-      test::assert_stdarr(expected, expected); // pass
+      ntest::assert_stdarr(expected, a); // fail
+      ntest::assert_stdarr(expected, b); // fail
+      ntest::assert_stdarr(expected, expected); // pass
     }
 
     // text files
-    test::assert_text_file("./files/expected.txt", "./files/a.txt");
-    test::assert_text_file("./files/expected.txt", "./files/b.txt");
-    test::assert_text_file("./files/expected.txt", "./files/expected.txt");
-    test::assert_text_file("./files/does_not_exist.txt", "./files/a.txt");
-    test::assert_text_file("./files/expected.txt", "./files/does_not_exist.txt");
+    ntest::assert_text_file("./files/expected.txt", "./files/a.txt");
+    ntest::assert_text_file("./files/expected.txt", "./files/b.txt");
+    ntest::assert_text_file("./files/expected.txt", "./files/expected.txt");
+    ntest::assert_text_file("./files/does_not_exist.txt", "./files/a.txt");
+    ntest::assert_text_file("./files/expected.txt", "./files/does_not_exist.txt");
 
     // binary files
-    test::assert_binary_file("./files/expected.bin", "./files/a.bin");
-    test::assert_binary_file("./files/expected.bin", "./files/b.bin");
-    test::assert_binary_file("./files/expected.bin", "./files/expected.bin");
-    test::assert_binary_file("./files/does_not_exist.bin", "./files/a.bin");
-    test::assert_binary_file("./files/expected.bin", "./files/does_not_exist.bin");
+    ntest::assert_binary_file("./files/expected.bin", "./files/a.bin");
+    ntest::assert_binary_file("./files/expected.bin", "./files/b.bin");
+    ntest::assert_binary_file("./files/expected.bin", "./files/expected.bin");
+    ntest::assert_binary_file("./files/does_not_exist.bin", "./files/a.bin");
+    ntest::assert_binary_file("./files/expected.bin", "./files/does_not_exist.bin");
 
-    test::generate_report("example");
+    ntest::generate_report("example");
   }
   catch (std::runtime_error const &err)
   {
