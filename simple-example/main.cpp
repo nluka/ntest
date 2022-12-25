@@ -2,6 +2,8 @@
 
 int main()
 {
+  ntest::init();
+
   ntest::assert_int32(1, 1); // pass!
   ntest::assert_int32(0, 1); // fail!
 
