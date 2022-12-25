@@ -4,7 +4,7 @@ This example walks through the basics of ntest.
 To use ntest, copy [ntest.cpp](/ntest.cpp) and [ntest.hpp](/ntest.hpp) somewhere into your project, and create a translation unit for your tester program. In this example, our filesystem looks like:
 
 ```
-ntest
+ntest/
 │  ntest.cpp
 |  ntest.hpp
 |  ...
@@ -41,7 +41,7 @@ int main()
 After compiling and running the tester program, several files are generated:
 
 ```
-ntest
+ntest/
 │  ntest.cpp
 |  ntest.hpp
 |  ...
@@ -84,8 +84,6 @@ whose diff is:
 
 and the generated markdown report [simple.md](simple.md) informs us of this failing assertion, as well the other assertions we made:
 
---- START OF GENERATED MARKDOWN REPORT ---
-
 ## simple
 
 |   |   |
@@ -108,5 +106,3 @@ and the generated markdown report [simple.md](simple.md) informs us of this fail
 | int | 1 | main:5,10 | [./main.cpp](./main.cpp) |
 | char* | len=12 "`Hello world!`" | main:8,10 | [./main.cpp](./main.cpp) |
 | std::vector\<int\> | sz=4 __[__ `0`, `1`, `2`, `3`, __]__ | main:14,12 | [./main.cpp](./main.cpp) |
-
---- END OF GENERATED MARKDOWN REPORT ---
