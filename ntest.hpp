@@ -127,6 +127,8 @@ namespace internal {
 
 } // namespace internal
 
+void init();
+
 void assert_int8(
   int8_t expected, int8_t actual,
   std::source_location loc = std::source_location::current()

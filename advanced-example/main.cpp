@@ -12,6 +12,8 @@ size_t len(Ty (&)[Length])
 
 int main()
 {
+  ntest::init();
+
   try
   {
     ntest::config::set_max_arr_preview_len(2);
