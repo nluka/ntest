@@ -282,6 +282,16 @@ int main()
     ntest::assert_binary_file("./files/does_not_exist.bin", "./files/a.bin");
     ntest::assert_binary_file("./files/expected.bin", "./files/does_not_exist.bin");
 
+    try {
+      int expected[] = { 1, 2, 3 };
+      int *actual = nullptr;
+      // this should throw because we said actual has 3 elems when it's really a nullptr
+      ntest::assert_arr(expected, 3, actual, 3);
+      std::cerr << "failed to catch user error!\n";
+    } catch (std::runtime_error const &err) {
+      std::cout << "successfully caught user error: " << err.what() << '\n';
+    }
+
     ntest::generate_report("example");
   }
   catch (std::runtime_error const &err)

@@ -200,6 +200,21 @@ void assert_arr(
   Ty const *const actual, size_t const actual_size,
   std::source_location const loc = std::source_location::current())
 {
+  if (expected_size > 0 && expected == nullptr) {
+    std::stringstream err{};
+    err
+      << "ntest::assert_arr - 'expected' array size was > 0 but data was nullptr, at "
+      << loc.file_name() << ':' << loc.line() << "," << loc.column();
+    throw std::runtime_error(err.str());
+  }
+  if (actual_size > 0 && actual == nullptr) {
+    std::stringstream err{};
+    err
+      << "ntest::assert_arr - 'actual' array size was > 0 but data was nullptr, at "
+      << loc.file_name() << ':' << loc.line() << "," << loc.column();
+    throw std::runtime_error(err.str());
+  }
+
   bool const passed = ntest::internal::arr_eq(
     expected, expected_size, actual, actual_size);
 
