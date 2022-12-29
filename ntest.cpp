@@ -646,7 +646,7 @@ void ntest::init()
       continue;
 
     auto const extension = path.extension();
-    if (extension == "expected" || extension == "actual")
+    if (extension == ".expected" || extension == ".actual")
       fs::remove(path);
   }
 }
