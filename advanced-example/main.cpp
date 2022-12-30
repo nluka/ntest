@@ -19,6 +19,10 @@ int main()
     ntest::config::set_max_arr_preview_len(2);
     ntest::config::set_max_str_preview_len(10);
 
+    // bool
+    ntest::assert_bool(true, true); // pass
+    ntest::assert_bool(true, false); // fail
+
     // int8
     ntest::assert_int8(INT8_MIN, INT8_MIN); // pass
     ntest::assert_int8(INT8_MIN, INT8_MIN + 100); // fail

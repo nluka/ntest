@@ -14,6 +14,7 @@ Table of contents:
 - Simple but useful markdown reports
 - Built-in assertion functions for:
   - integral types:
+    - `bool`
     - `int8_t`, `uint8_t`
     - `int16_t`, `uint16_t`
     - `int32_t`, `uint32_t`
