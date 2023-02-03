@@ -30,9 +30,14 @@ namespace concepts {
   template <typename Ty>
   concept printable = requires(std::ostream os, Ty obj) { os << obj; };
 
+  template <typename Ty>
+  concept derives_from_std_exception = requires(Ty) { std::derived_from<std::exception, Ty>; };
+
 } // namespace concepts
 
 namespace internal {
+
+  // std::string make_str(char const *fmt, ...);
 
   size_t max_str_preview_len();
 
@@ -51,11 +56,11 @@ namespace internal {
     std::source_location loc;
   };
 
-  void emplace_passed_assertion(
-    std::stringstream const &, std::source_location const &);
+  void register_passed_assertion(
+    std::stringstream &&, std::source_location const &);
 
-  void emplace_failed_assertion(
-    std::stringstream const &, std::source_location const &);
+  void register_failed_assertion(
+    std::stringstream &&, std::source_location const &);
 
   template <typename Ty>
   requires concepts::printable<Ty>
@@ -232,10 +237,8 @@ void assert_arr(
 
   if (passed)
   {
-    ntest::internal::serialize_arr_preview(
-      expected, expected_size, serialized_vals);
-    ntest::internal::emplace_passed_assertion(
-      std::move(serialized_vals), loc);
+    ntest::internal::serialize_arr_preview(expected, expected_size, serialized_vals);
+    ntest::internal::register_passed_assertion(std::move(serialized_vals), loc);
   }
   else // failed
   {
@@ -250,8 +253,7 @@ void assert_arr(
       << '[' << expected_pathname << "](" << expected_pathname
       << ") | [" << actual_pathname << "](" << actual_pathname << ')';
 
-    ntest::internal::emplace_failed_assertion(
-      std::move(serialized_vals), loc);
+    ntest::internal::register_failed_assertion(std::move(serialized_vals), loc);
   }
 }
 
@@ -272,10 +274,8 @@ void assert_stdvec(
 
   if (passed)
   {
-    ntest::internal::serialize_arr_preview(
-      expected.data(), expected.size(), serialized_vals);
-    ntest::internal::emplace_passed_assertion(
-      std::move(serialized_vals), loc);
+    ntest::internal::serialize_arr_preview(expected.data(), expected.size(), serialized_vals);
+    ntest::internal::register_passed_assertion(std::move(serialized_vals), loc);
   }
   else // failed
   {
@@ -283,17 +283,14 @@ void assert_stdvec(
       expected_pathname = internal::generate_file_pathname(loc, "expected"),
       actual_pathname = internal::generate_file_pathname(loc, "actual");
 
-    ntest::internal::write_arr_to_file(
-      expected_pathname, expected.data(), expected.size());
-    ntest::internal::write_arr_to_file(
-      actual_pathname, actual.data(), actual.size());
+    ntest::internal::write_arr_to_file(expected_pathname, expected.data(), expected.size());
+    ntest::internal::write_arr_to_file(actual_pathname, actual.data(), actual.size());
 
     serialized_vals
       << '[' << expected_pathname << "](" << expected_pathname
       << ") | [" << actual_pathname << "](" << actual_pathname << ')';
 
-    ntest::internal::emplace_failed_assertion(
-      std::move(serialized_vals), loc);
+    ntest::internal::register_failed_assertion(std::move(serialized_vals), loc);
   }
 }
 
@@ -314,10 +311,8 @@ void assert_stdarr(
 
   if (passed)
   {
-    ntest::internal::serialize_arr_preview(
-      expected.data(), expected.size(), serialized_vals);
-    ntest::internal::emplace_passed_assertion(
-      std::move(serialized_vals), loc);
+    ntest::internal::serialize_arr_preview(expected.data(), expected.size(), serialized_vals);
+    ntest::internal::register_passed_assertion(std::move(serialized_vals), loc);
   }
   else // failed
   {
@@ -334,8 +329,7 @@ void assert_stdarr(
       << '[' << expected_pathname << "](" << expected_pathname
       << ") | [" << actual_pathname << "](" << actual_pathname << ')';
 
-    ntest::internal::emplace_failed_assertion(
-      std::move(serialized_vals), loc);
+    ntest::internal::register_failed_assertion(std::move(serialized_vals), loc);
   }
 }
 
@@ -379,7 +373,63 @@ void assert_binary_file(
   std::source_location loc = std::source_location::current()
 );
 
+/*
+  Asserts that a certain type of exception if thrown by `code_snippet`.
+  If the correct exception type is thrown, returns the .what() string of the thrown exception.
+  If the wrong exception type is thrown or no exception is thrown, an empty string is returned.
+  `ExceptTy` must be derived from std::exception.
+*/
+template <typename ExceptTy>
+requires concepts::derives_from_std_exception<ExceptTy>
+[[maybe_unused]] std::string assert_throws(
+  std::function<void (void)> const &code_snippet,
+  std::source_location const loc = std::source_location::current())
+{
+  bool threw_correct_except = false;
+  bool threw_incorrect_except = false;
+  std::string what_str = "";
+
+  try
+  {
+    code_snippet();
+  }
+  catch (ExceptTy const &except)
+  {
+    threw_correct_except = true;
+    what_str = except.what();
+  }
+  catch (...)
+  {
+    threw_incorrect_except = true;
+  }
+
+  std::stringstream serialized_vals{};
+  serialized_vals << ntest::internal::beautify_typeid_name(typeid(ExceptTy).name()) << " | ";
+
+  if (threw_correct_except) // passed
+  {
+    serialized_vals << "to be thrown";
+    ntest::internal::register_passed_assertion(std::move(serialized_vals), loc);
+  }
+  else if (threw_incorrect_except) // failed
+  {
+    serialized_vals << "to be thrown | different exception type was thrown";
+    ntest::internal::register_failed_assertion(std::move(serialized_vals), loc);
+  }
+  else // failed, didn't throw anything
+  {
+    serialized_vals << "to be thrown | nothing was thrown";
+    ntest::internal::register_failed_assertion(std::move(serialized_vals), loc);
+  }
+
+  return what_str;
+}
+
 void generate_report(char const *name);
+
+size_t pass_count();
+
+size_t fail_count();
 
 } // namespace ntest
 

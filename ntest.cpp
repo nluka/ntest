@@ -1,4 +1,5 @@
 #include <chrono>
+#include <cstdarg>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
@@ -25,11 +26,15 @@ using std::runtime_error;
 using std::fstream;
 using ntest::internal::assertion;
 
+// STATE:
 static vector<assertion> s_failed_assertions{};
 static vector<assertion> s_passed_assertions{};
+
+// CONFIGURABLE SETTINGS:
 static string s_output_path = ".";
 static size_t s_max_str_preview_len = 20;
 static size_t s_max_arr_preview_len = 10;
+
 static std::pair<char, char> constexpr s_special_chars[] {
   { '\a', 'a' },
   { '\b', 'b' },
@@ -56,6 +61,17 @@ void ntest::config::set_max_arr_preview_len(size_t const len)
   s_max_arr_preview_len = len;
 }
 
+// std::string ntest::internal::make_str(char const *const fmt, ...) {
+//   char buffer[4096];
+
+//   va_list args;
+//   va_start(args, fmt);
+//   vsnprintf(buffer, sizeof(buffer), fmt, args);
+//   va_end(args);
+
+//   return std::string(buffer);
+// }
+
 size_t ntest::internal::max_str_preview_len()
 {
   return s_max_str_preview_len;
@@ -66,16 +82,16 @@ size_t ntest::internal::max_arr_preview_len()
   return s_max_arr_preview_len;
 }
 
-void ntest::internal::emplace_failed_assertion(
-  stringstream const &ss, source_location const &loc)
+void ntest::internal::register_failed_assertion(
+  stringstream &&ss, source_location const &loc)
 {
-  s_failed_assertions.emplace_back(std::move(ss.str()), loc);
+  s_failed_assertions.emplace_back(ss.str(), loc);
 }
 
-void ntest::internal::emplace_passed_assertion(
-  stringstream const &ss, source_location const &loc)
+void ntest::internal::register_passed_assertion(
+  stringstream &&ss, source_location const &loc)
 {
-  s_passed_assertions.emplace_back(std::move(ss.str()), loc);
+  s_passed_assertions.emplace_back(ss.str(), loc);
 }
 
 string ntest::internal::generate_file_pathname(
@@ -102,6 +118,9 @@ void ntest::internal::throw_if_file_not_open(
   }
 }
 
+/*
+  Compilers love generating very ugly typeids, this cleans them up.
+*/
 string ntest::internal::beautify_typeid_name(char const *const name)
 {
   using std::regex;
@@ -133,11 +152,13 @@ void assert_integral(
     << " | " << std::to_string(expected);
 
   if (passed)
-    ntest::internal::emplace_passed_assertion(serialized_vals, loc);
+  {
+    ntest::internal::register_passed_assertion(std::move(serialized_vals), loc);
+  }
   else // failed
   {
     serialized_vals << " | " << std::to_string(actual);
-    ntest::internal::emplace_failed_assertion(serialized_vals, loc);
+    ntest::internal::register_failed_assertion(std::move(serialized_vals), loc);
   }
 }
 
@@ -161,11 +182,13 @@ void ntest::assert_bool(
   serialized_vals << "bool | " << bool_to_string(expected);
 
   if (passed)
-    ntest::internal::emplace_passed_assertion(serialized_vals, loc);
+  {
+    ntest::internal::register_passed_assertion(std::move(serialized_vals), loc);
+  }
   else // failed
   {
     serialized_vals << " | " << bool_to_string(actual);
-    ntest::internal::emplace_failed_assertion(serialized_vals, loc);
+    ntest::internal::register_failed_assertion(std::move(serialized_vals), loc);
   }
 }
 
@@ -290,7 +313,10 @@ void ntest::assert_cstr(
   ntest::str_opts const &options,
   source_location const loc)
 {
-  bool const passed = strcmp(expected, actual) == 0;
+  bool const passed =
+    (expected_len == actual_len) &&
+    (strcmp(expected, actual) == 0)
+  ;
 
   stringstream serialized_vals{};
   serialized_vals << "char* | ";
@@ -298,7 +324,7 @@ void ntest::assert_cstr(
   if (passed)
   {
     serialize_str_preview(expected, expected_len, serialized_vals);
-    internal::emplace_passed_assertion(serialized_vals, loc);
+    internal::register_passed_assertion(std::move(serialized_vals), loc);
   }
   else // failed
   {
@@ -343,7 +369,7 @@ void ntest::assert_cstr(
       << '[' << expected_pathname << "](" << expected_pathname
       << ") | [" << actual_pathname << "](" << actual_pathname << ')';
 
-    internal::emplace_failed_assertion(serialized_vals, loc);
+    internal::register_failed_assertion(std::move(serialized_vals), loc);
   }
 }
 
@@ -491,7 +517,9 @@ void ntest::assert_text_file(
   }
 
   if (passed)
-    internal::emplace_passed_assertion(serialized_vals, loc);
+  {
+    internal::register_passed_assertion(std::move(serialized_vals), loc);
+  }
   else // failed
   {
     serialized_vals << " | ";
@@ -503,7 +531,7 @@ void ntest::assert_text_file(
         << '[' << actual_pathname_generic << "]("
         << actual_pathname_generic << ')';
     }
-    internal::emplace_failed_assertion(serialized_vals, loc);
+    internal::register_failed_assertion(std::move(serialized_vals), loc);
   }
 }
 
@@ -573,7 +601,9 @@ void ntest::assert_binary_file(
   }
 
   if (passed)
-    internal::emplace_passed_assertion(serialized_vals, loc);
+  {
+    internal::register_passed_assertion(std::move(serialized_vals), loc);
+  }
   else // failed
   {
     serialized_vals << " | ";
@@ -585,7 +615,7 @@ void ntest::assert_binary_file(
         << '[' << actual_pathname_generic << "]("
         << actual_pathname_generic << ')';
     }
-    internal::emplace_failed_assertion(serialized_vals, loc);
+    internal::register_failed_assertion(std::move(serialized_vals), loc);
   }
 }
 
@@ -677,4 +707,16 @@ void ntest::init()
     if (extension == ".expected" || extension == ".actual")
       fs::remove(path);
   }
+}
+
+// Returns the number of passed assertions since the last time `ntest::generate_report` was called.
+size_t ntest::pass_count()
+{
+  return s_passed_assertions.size();
+}
+
+// Returns the number of failed assertions since the last time `ntest::generate_report` was called.
+size_t ntest::fail_count()
+{
+  return s_failed_assertions.size();
 }
