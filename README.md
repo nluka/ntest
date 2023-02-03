@@ -26,6 +26,7 @@ Table of contents:
     - `std::vector`
     - `std::array`
   - text and binary files
+  - exceptions
 
 ## Getting Started
 
