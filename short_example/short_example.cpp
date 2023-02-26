@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "../ntest.hpp"
 
 int main()
@@ -13,9 +15,10 @@ int main()
   {
     std::vector<int> a { 0, 1, 2, 3 };
     std::vector<int> b { 0, 1, 9, 3 };
-    ntest::assert_stdvec(a, a); // pass!
     ntest::assert_stdvec(a, b); // fail!
+    ntest::assert_stdvec(a, a); // pass!
   }
 
-  ntest::generate_report("report");
+  auto const res = ntest::generate_report("short_example_report");
+  std::cout << res.num_passes << " passed, " << res.num_fails << " failed\n";
 }

@@ -1,8 +1,11 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <chrono>
 #include <cstdarg>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <regex>
 #include <sstream>
 #include <string>
@@ -31,7 +34,6 @@ static vector<assertion> s_failed_assertions{};
 static vector<assertion> s_passed_assertions{};
 
 // CONFIGURABLE SETTINGS:
-static string s_output_path = ".";
 static size_t s_max_str_preview_len = 20;
 static size_t s_max_arr_preview_len = 10;
 
@@ -46,11 +48,6 @@ static std::pair<char, char> constexpr s_special_chars[] {
   { '\0', '0' },
 };
 
-void ntest::config::set_output_path(char const *const path)
-{
-  s_output_path = path;
-}
-
 void ntest::config::set_max_str_preview_len(size_t const len)
 {
   s_max_str_preview_len = len;
@@ -61,12 +58,13 @@ void ntest::config::set_max_arr_preview_len(size_t const len)
   s_max_arr_preview_len = len;
 }
 
-char const *const ntest::internal::preview_style()
+char const *ntest::internal::preview_style()
 {
   return
     "background-color: lightgray;"
     "border: 1px solid darkgray;"
     "border-radius: 5px;"
+    "color: black;"
     "font-family: monospace;"
     "padding: 1px;"
     "white-space: pre-wrap;"
@@ -495,7 +493,9 @@ void ntest::assert_text_file(
 
   serialized_vals << "text file | ";
   if (!expected_exists)
-    serialized_vals << "<span style='color:red;'>not found</span>";
+  {
+    serialized_vals << "<span style='color:red;'>file not found</span>";
+  }
   else
   {
     serialized_vals
@@ -511,7 +511,7 @@ void ntest::assert_text_file(
   {
     serialized_vals << " | ";
     if (!actual_exists)
-      serialized_vals << "<span style='color:red;'>not found</span>";
+      serialized_vals << "<span style='color:red;'>file not found</span>";
     else
     {
       serialized_vals
@@ -581,7 +581,7 @@ void ntest::assert_binary_file(
 
   serialized_vals << "binary file | ";
   if (!expected_exists)
-    serialized_vals << "<span style='color:red;'>not found</span>";
+    serialized_vals << "<span style='color:red;'>file not found</span>";
   else
   {
     serialized_vals
@@ -597,7 +597,7 @@ void ntest::assert_binary_file(
   {
     serialized_vals << " | ";
     if (!actual_exists)
-      serialized_vals << "<span style='color:red;'>not found</span>";
+      serialized_vals << "<span style='color:red;'>file not found</span>";
     else
     {
       serialized_vals
@@ -608,29 +608,25 @@ void ntest::assert_binary_file(
   }
 }
 
-void ntest::generate_report(char const *const name)
+ntest::report_result ntest::generate_report(char const *const name)
 {
   size_t const
     total_failed = s_failed_assertions.size(),
     total_passed = s_passed_assertions.size();
 
-  string pathname = s_output_path;
-  if (!pathname.ends_with("/") && !pathname.ends_with("\\"))
-    pathname.push_back('/');
-  pathname.append(name);
-  pathname.append(".md");
+  string report_path = "./";
+  report_path.append(name);
+  report_path.append(".md");
 
-  std::ofstream ofs(pathname, std::ios::out);
-
-  printf("generating report \"%s\"... ", pathname.c_str());
+  std::ofstream ofs(report_path, std::ios::out);
 
   {
-    time_t raw_time;
-    time(&raw_time);
+    time_t const raw_time = time(nullptr);
+    char const *const time_cstr = ctime(&raw_time);
 
     ofs
       << "# " << name << "\n\n"
-      << ctime(&raw_time) << "\n" // only 1 \n because ctime result has 1 already
+      << time_cstr << "\n" // only 1 \n because ctime result has 1 already
       << total_failed << " failed\n\n"
       << total_passed << " passed\n\n"
     ;
@@ -640,10 +636,11 @@ void ntest::generate_report(char const *const name)
   {
     auto const &[serialized_vals, loc] = assertion;
     ofs
-      << "| " << (passed ? "✅" : "❌") << ' ' // outcome
-      << "| " << serialized_vals << " | " // type, expected, [actual]
+      << "| " << (passed ? "✅" : "❌") << ' ' // Outcome
+      << "| " << serialized_vals << " | " // Type, Expected, [Actual]
       << loc.function_name() << ':' << loc.line() << ',' << loc.column() // Location
-      << " | [" << loc.file_name() << "](" << loc.file_name() << ") |\n" // Source File
+      << " | " << loc.file_name() << " |\n" // Source File
+      // << " | [" << loc.file_name() << "](" << loc.file_name() << ") |\n" // Source File
     ;
   };
 
@@ -673,36 +670,57 @@ void ntest::generate_report(char const *const name)
     ofs << '\n';
   }
 
-  printf("done\n");
-
   // reset state to allow user to generate multiple independent reports
   s_failed_assertions.clear();
   s_passed_assertions.clear();
+
+  return { total_passed, total_failed };
 }
 
-void ntest::init()
+ntest::init_result ntest::init(bool const remove_residual_files)
 {
   auto const current_path = fs::current_path();
+  size_t num_files_removed = 0;
+  size_t num_files_failed_to_remove = 0;
 
-  // remove any residual .expected and .actual files
-  for (
-    auto const &entry :
-    fs::directory_iterator(
-      current_path,
-      fs::directory_options::skip_permission_denied
+  if (remove_residual_files)
+  {
+    // remove any residual .expected and .actual files
+    for (
+      auto const &entry :
+      fs::directory_iterator(
+        current_path,
+        fs::directory_options::skip_permission_denied
+      )
     )
-  ) {
-    if (!entry.is_regular_file())
-      continue;
+    {
+      if (!entry.is_regular_file())
+        continue;
 
-    auto const path = entry.path();
-    if (!path.has_extension())
-      continue;
+      auto const path = entry.path();
+      if (!path.has_extension())
+        continue;
 
-    auto const extension = path.extension();
-    if (extension == ".expected" || extension == ".actual")
-      fs::remove(path);
+      auto const extension = path.extension();
+      if (extension == ".expected" || extension == ".actual")
+      {
+        try
+        {
+          fs::remove(path);
+          ++num_files_removed;
+        }
+        catch (std::runtime_error const &except)
+        {
+          std::stringstream err{};
+          err << "failed to remove " << path << ", " << except.what();
+          std::cerr << err.str() << '\n';
+          ++num_files_failed_to_remove;
+        }
+      }
+    }
   }
+
+  return { num_files_removed, num_files_failed_to_remove };
 }
 
 // Returns the number of passed assertions since the last time `ntest::generate_report` was called.

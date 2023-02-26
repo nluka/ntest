@@ -18,13 +18,6 @@ enum class unit {
 template <unit UnitTy>
 class scoped {
 public:
-  // enum class Unit {
-  //   SECONDS      = 1,
-  //   MILLISECONDS = 1'000,
-  //   MICROSECONDS = 1'000'000,
-  //   NANOSECONDS  = 1'000'000'000,
-  // };
-
   scoped(char const *const label, std::ostream &os)
   : m_label{label},
     m_os{os},

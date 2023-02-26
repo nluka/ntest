@@ -26,7 +26,7 @@ int main()
     size_t const ntest_pass_cnt = ntest::pass_count();
     if (ntest_pass_cnt != observed_pass_cnt) {
       std::cerr << "ERROR: incorrect assertion outcome (wanted pass, got fail) on line " << loc.line() << '\n';
-      ntest::generate_report("example");
+      ntest::generate_report("validation");
       std::exit(1);
     }
   };
@@ -40,7 +40,7 @@ int main()
     size_t const ntest_fail_cnt = ntest::fail_count();
     if (ntest_fail_cnt != observed_fail_cnt) {
       std::cerr << "ERROR: incorrect assertion outcome (wanted fail, got pass) on line " << loc.line() << '\n';
-      ntest::generate_report("example");
+      ntest::generate_report("validation");
       std::exit(1);
     }
   };
@@ -399,8 +399,7 @@ int main()
         << ", observed " << actual_pass_cnt << '/' << actual_fail_cnt << '\n';
       ;
     }
-
-    ntest::generate_report("example");
+    ntest::generate_report("validation");
   }
   catch (std::runtime_error const &err)
   {

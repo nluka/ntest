@@ -14,8 +14,6 @@ namespace ntest {
 
 namespace config {
 
-  void set_output_path(char const *);
-
   void set_max_str_preview_len(size_t);
 
   void set_max_arr_preview_len(size_t);
@@ -45,7 +43,7 @@ namespace concepts {
 
 namespace internal {
 
-  char const *const preview_style();
+  char const *preview_style();
 
   size_t max_str_preview_len();
 
@@ -168,8 +166,6 @@ namespace internal {
   std::string beautify_typeid_name(char const *name);
 
 } // namespace internal
-
-void init();
 
 void assert_bool(
   bool expected,
@@ -483,7 +479,21 @@ requires concepts::derives_from_std_exception<ExceptTy>
   return what_str;
 }
 
-void generate_report(char const *name);
+struct init_result
+{
+  size_t num_files_removed;
+  size_t num_files_failed_to_remove;
+};
+
+init_result init(bool remove_residual_files = true);
+
+struct report_result
+{
+  size_t num_passes;
+  size_t num_fails;
+};
+
+report_result generate_report(char const *name);
 
 size_t pass_count();
 

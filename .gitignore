@@ -1,10 +1,15 @@
 .vscode/
+.vs/
 
 *.exe
 *.ilk
 *.obj
 *.pdb
+*vcxproj.user
 
-advanced-example/*.md
-advanced-example/*.expected
-advanced-example/*.actual
+interm1
+interm2
+
+validation/*.md
+validation/*.expected
+validation/*.actual
