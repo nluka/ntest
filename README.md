@@ -5,7 +5,6 @@ A simple and lightweight library for testing in C++20.
 Table of contents:
 - [Features](#features)
 - [Getting Started](#getting-started)
-- [Documentation](#documentation)
 
 ## Features
 
@@ -30,4 +29,4 @@ Table of contents:
 
 ## Getting Started
 
-To learn the basics of ntest, see the [simple example](/simple-example/) provided. After that, check out the [advanced example](/advanced-example/) to see all the features in practice.
+To learn the basics of ntest, see the [short example](/short_example/) provided. After that, check out the [validation](/validation/) to see all the features in action.

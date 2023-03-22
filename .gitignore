@@ -6,10 +6,7 @@
 *.obj
 *.pdb
 *vcxproj.user
+*.elf
 
 interm1
 interm2
-
-validation/*.md
-validation/*.expected
-validation/*.actual

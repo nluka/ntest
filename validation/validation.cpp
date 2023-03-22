@@ -143,6 +143,15 @@ int main()
       ntest::assert_stdstr(ss.str(), ss.str()); ensure_passed();
     }
 
+    // strings with backticks
+    {
+      char const *const str = "`Backtick`";
+      ntest::assert_cstr(str, str); ensure_passed();
+      ntest::assert_stdstr(str, str); ensure_passed();
+      ntest::assert_cstr(str, "nonsense"); ensure_failed();
+      ntest::assert_stdstr(str, "nonsense"); ensure_failed();
+    }
+
     // int []
     {
       int const expected[] { 0, 1, 2, 3 };

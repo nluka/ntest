@@ -9,6 +9,7 @@
 #include <sstream>
 #include <string>
 #include <type_traits>
+#include <filesystem>
 
 namespace ntest {
 
@@ -49,7 +50,7 @@ namespace internal {
 
   size_t max_arr_preview_len();
 
-  std::string generate_file_pathname(std::source_location const &, char const *extension);
+  std::string make_stringified_file_path(std::source_location const &, char const *extension);
 
   void throw_if_file_not_open(std::fstream const &, char const *pathname);
 
@@ -291,8 +292,8 @@ void assert_arr(
   else // failed
   {
     std::string const
-      expected_pathname = internal::generate_file_pathname(loc, "expected"),
-      actual_pathname = internal::generate_file_pathname(loc, "actual");
+      expected_pathname = internal::make_stringified_file_path(loc, "expected"),
+      actual_pathname = internal::make_stringified_file_path(loc, "actual");
 
     ntest::internal::write_arr_to_file(expected_pathname, expected, expected_size);
     ntest::internal::write_arr_to_file(actual_pathname, actual, actual_size);
@@ -329,8 +330,8 @@ void assert_stdvec(
   else // failed
   {
     std::string const
-      expected_pathname = internal::generate_file_pathname(loc, "expected"),
-      actual_pathname = internal::generate_file_pathname(loc, "actual");
+      expected_pathname = internal::make_stringified_file_path(loc, "expected"),
+      actual_pathname = internal::make_stringified_file_path(loc, "actual");
 
     ntest::internal::write_arr_to_file(expected_pathname, expected.data(), expected.size());
     ntest::internal::write_arr_to_file(actual_pathname, actual.data(), actual.size());
@@ -367,8 +368,8 @@ void assert_stdarr(
   else // failed
   {
     std::string const
-      expected_pathname = internal::generate_file_pathname(loc, "expected"),
-      actual_pathname = internal::generate_file_pathname(loc, "actual");
+      expected_pathname = internal::make_stringified_file_path(loc, "expected"),
+      actual_pathname = internal::make_stringified_file_path(loc, "actual");
 
     ntest::internal::write_arr_to_file(expected_pathname, expected.data(), expected.size());
     ntest::internal::write_arr_to_file(actual_pathname, actual.data(), actual.size());
