@@ -47,11 +47,11 @@ int main()
 
   try
   {
+    timer::scoped<timer::unit::MILLISECONDS> timer("execution", std::cout);
+
     ntest::init();
     ntest::config::set_max_arr_preview_len(2);
-    ntest::config::set_max_str_preview_len(10);
-
-    timer::scoped<timer::unit::MILLISECONDS> timer("execution", std::cout);
+    ntest::config::set_max_str_preview_len(15);
 
     // bool
     ntest::assert_bool(true, true); ensure_passed();
@@ -150,6 +150,11 @@ int main()
       ntest::assert_stdstr(str, str); ensure_passed();
       ntest::assert_cstr(str, "nonsense"); ensure_failed();
       ntest::assert_stdstr(str, "nonsense"); ensure_failed();
+    }
+    {
+      std::vector<std::string> const a { "`Backtick`" };
+      ntest::assert_stdvec(a, a); ensure_passed();
+      ntest::assert_stdvec(a, {}); ensure_failed();
     }
 
     // int []
@@ -256,6 +261,14 @@ int main()
       ntest::assert_stdvec(expected, a); ensure_failed();
       ntest::assert_stdvec(expected, b); ensure_failed();
       ntest::assert_stdvec(expected, expected); ensure_passed();
+
+      std::vector<std::string> const c {
+        "Testing\n",
+        "code\n",
+        "is\n",
+        "important!\n",
+      };
+      ntest::assert_stdvec(c, c); ensure_passed(); // check preview has \n escaped
     }
 
     // std::array<int>

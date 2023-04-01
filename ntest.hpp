@@ -44,6 +44,8 @@ namespace concepts {
 
 namespace internal {
 
+  std::string escape(std::string const &);
+
   char const *preview_style();
 
   size_t max_str_preview_len();
@@ -130,38 +132,42 @@ namespace internal {
     size_t const size,
     std::stringstream &ss)
   {
-    ss << "sz=" << size;
+    std::stringstream serial{};
+
+    serial << "sz=" << size;
 
     if (size == 0)
       return;
 
-    ss << " __[__ ";
+    serial << " __[__ ";
 
     size_t const max_len = std::min(size, ntest::internal::max_arr_preview_len());
     for (size_t i = 0; i < max_len; ++i)
     {
-      ss << "<span style='" << internal::preview_style() << "' title='index " << i << "'>";
+      serial << "<span style='" << internal::preview_style() << "' title='index " << i << "'>";
       if constexpr (std::is_integral_v<Ty>)
       {
         // some integrals like uint8_t are treated strangely by ostream insertion,
         // so casting must be done
         if constexpr (std::is_unsigned_v<Ty>)
-          ss << static_cast<uintmax_t>(arr[i]);
+          serial << static_cast<uintmax_t>(arr[i]);
         else
-          ss << static_cast<intmax_t>(arr[i]);
+          serial << static_cast<intmax_t>(arr[i]);
       }
       else
       {
-        ss << arr[i];
+        serial << arr[i];
       }
-      ss << "</span>, ";
+      serial << "</span>, ";
     }
 
     if (size > max_len)
     {
-      ss << " *... " << (size - max_len) << " more* ";
+      serial << " *... " << (size - max_len) << " more* ";
     }
-    ss << "__]__";
+    serial << "__]__";
+
+    ss << ntest::internal::escape(serial.str());
   }
 
   std::string beautify_typeid_name(char const *name);

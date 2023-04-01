@@ -15,6 +15,18 @@
 
 #include "ntest.hpp"
 
+static std::pair<char, char> constexpr s_special_chars[] {
+  { '\a', 'a' },
+  { '\b', 'b' },
+  { '\f', 'f' },
+  { '\n', 'n' },
+  { '\r', 'r' },
+  { '\t', 't' },
+  { '\v', 'v' },
+  { '\0', '0' },
+  { '`', '`' }, // Due to markdown
+};
+
 template <typename Ty, size_t Length>
 consteval
 size_t lengthof(Ty (&)[Length])
@@ -261,24 +273,40 @@ void ntest::assert_uint64(
   assert_integral(expected, actual, loc);
 }
 
+std::string ntest::internal::escape(std::string const &input)
+{
+  std::string out{};
+  out.reserve(input.length());
+
+  for (size_t i = 0; i < input.length(); ++i)
+  {
+    char const ch = input[i];
+    bool is_special = false;
+
+    for (auto const &pair : s_special_chars)
+    {
+      if (ch == pair.first)
+      {
+        is_special = true;
+        out += '\\';
+        out += pair.second;
+        break;
+      }
+    }
+
+    if (!is_special)
+      out += ch;
+  }
+
+  return std::move(out);
+}
+
 static
 void print_escaped_string_to_ostream(
   char const *const str,
   size_t const len,
   std::ostream &os)
 {
-  static std::pair<char, char> constexpr s_special_chars[] {
-    { '\a', 'a' },
-    { '\b', 'b' },
-    { '\f', 'f' },
-    { '\n', 'n' },
-    { '\r', 'r' },
-    { '\t', 't' },
-    { '\v', 'v' },
-    { '\0', '0' },
-    { '`', '`' }, // Due to markdown
-  };
-
   for (size_t i = 0; i < len; ++i)
   {
     char const ch = str[i];

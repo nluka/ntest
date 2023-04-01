@@ -1,115 +1,118 @@
 # validation
 
-Wed Mar 22 19:31:00 2023
+Sat Apr  1 19:37:30 2023
 
-60 failed
+61 failed
 
-41 passed
+43 passed
 
 | | Type | Expected | Actual | Location (fn:ln,col) | Source File |
 | - | - | - | - | - | - |
-| ❌ | bool | true | false | int main():58,23 | validation.cpp |
-| ❌ | signed char | -128 | -28 | int main():62,23 | validation.cpp |
-| ❌ | signed char | 0 | 8 | int main():64,23 | validation.cpp |
-| ❌ | signed char | 127 | 105 | int main():66,23 | validation.cpp |
-| ❌ | unsigned char | 0 | 1 | int main():70,24 | validation.cpp |
-| ❌ | unsigned char | 255 | 224 | int main():72,24 | validation.cpp |
-| ❌ | short | -32768 | -32668 | int main():76,24 | validation.cpp |
-| ❌ | short | 0 | 42 | int main():78,24 | validation.cpp |
-| ❌ | short | 32767 | 32756 | int main():80,24 | validation.cpp |
-| ❌ | unsigned short | 0 | 1 | int main():84,25 | validation.cpp |
-| ❌ | unsigned short | 65535 | 65091 | int main():86,25 | validation.cpp |
-| ❌ | int | -2147483648 | -2147483548 | int main():90,24 | validation.cpp |
-| ❌ | int | 0 | 42 | int main():92,24 | validation.cpp |
-| ❌ | int | 2147483647 | 2147483646 | int main():94,24 | validation.cpp |
-| ❌ | unsigned int | 0 | 1 | int main():98,25 | validation.cpp |
-| ❌ | unsigned int | 4294967295 | 4294966851 | int main():100,25 | validation.cpp |
-| ❌ | long | -9223372036854775808 | -9223372036854775708 | int main():104,24 | validation.cpp |
-| ❌ | long | 0 | 42 | int main():106,24 | validation.cpp |
-| ❌ | long | 9223372036854775807 | 9223372036854774806 | int main():108,24 | validation.cpp |
-| ❌ | unsigned long | 0 | 1 | int main():112,25 | validation.cpp |
-| ❌ | unsigned long | 18446744073709551615 | 18446744073709551573 | int main():114,25 | validation.cpp |
-| ❌ | char* | [validation.cpp@121,25.expected](validation.cpp@121,25.expected) | [validation.cpp@121,25.actual](validation.cpp@121,25.actual) | int main():121,25 | validation.cpp |
-| ❌ | char* | [validation.cpp@122,25.expected](validation.cpp@122,25.expected) | [validation.cpp@122,25.actual](validation.cpp@122,25.actual) | int main():122,25 | validation.cpp |
-| ❌ | char* | [validation.cpp@124,25.expected](validation.cpp@124,25.expected) | [validation.cpp@124,25.actual](validation.cpp@124,25.actual) | int main():124,25 | validation.cpp |
-| ❌ | char* | [validation.cpp@132,27.expected](validation.cpp@132,27.expected) | [validation.cpp@132,27.actual](validation.cpp@132,27.actual) | int main():132,27 | validation.cpp |
-| ❌ | char* | [validation.cpp@133,27.expected](validation.cpp@133,27.expected) | [validation.cpp@133,27.actual](validation.cpp@133,27.actual) | int main():133,27 | validation.cpp |
-| ❌ | char* | [validation.cpp@142,27.expected](validation.cpp@142,27.expected) | [validation.cpp@142,27.actual](validation.cpp@142,27.actual) | int main():142,27 | validation.cpp |
-| ❌ | char* | [validation.cpp@151,25.expected](validation.cpp@151,25.expected) | [validation.cpp@151,25.actual](validation.cpp@151,25.actual) | int main():151,25 | validation.cpp |
-| ❌ | char* | [validation.cpp@152,27.expected](validation.cpp@152,27.expected) | [validation.cpp@152,27.actual](validation.cpp@152,27.actual) | int main():152,27 | validation.cpp |
-| ❌ | int [] | [validation.cpp@161,24.expected](validation.cpp@161,24.expected) | [validation.cpp@161,24.actual](validation.cpp@161,24.actual) | int main():161,24 | validation.cpp |
-| ❌ | int [] | [validation.cpp@162,24.expected](validation.cpp@162,24.expected) | [validation.cpp@162,24.actual](validation.cpp@162,24.actual) | int main():162,24 | validation.cpp |
-| ❌ | customer [] | [validation.cpp@189,24.expected](validation.cpp@189,24.expected) | [validation.cpp@189,24.actual](validation.cpp@189,24.actual) | int main():189,24 | validation.cpp |
-| ❌ | customer [] | [validation.cpp@190,24.expected](validation.cpp@190,24.expected) | [validation.cpp@190,24.actual](validation.cpp@190,24.actual) | int main():190,24 | validation.cpp |
-| ❌ | customer [] | [validation.cpp@191,24.expected](validation.cpp@191,24.expected) | [validation.cpp@191,24.actual](validation.cpp@191,24.actual) | int main():191,24 | validation.cpp |
-| ❌ | std::vector\<int\> | [validation.cpp@201,27.expected](validation.cpp@201,27.expected) | [validation.cpp@201,27.actual](validation.cpp@201,27.actual) | int main():201,27 | validation.cpp |
-| ❌ | std::vector\<int\> | [validation.cpp@202,27.expected](validation.cpp@202,27.expected) | [validation.cpp@202,27.actual](validation.cpp@202,27.actual) | int main():202,27 | validation.cpp |
-| ❌ | std::vector\<customer\> | [validation.cpp@229,27.expected](validation.cpp@229,27.expected) | [validation.cpp@229,27.actual](validation.cpp@229,27.actual) | int main():229,27 | validation.cpp |
-| ❌ | std::vector\<customer\> | [validation.cpp@230,27.expected](validation.cpp@230,27.expected) | [validation.cpp@230,27.actual](validation.cpp@230,27.actual) | int main():230,27 | validation.cpp |
-| ❌ | std::vector\<customer\> | [validation.cpp@231,27.expected](validation.cpp@231,27.expected) | [validation.cpp@231,27.actual](validation.cpp@231,27.actual) | int main():231,27 | validation.cpp |
-| ❌ | std::vector\<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>\> | [validation.cpp@256,27.expected](validation.cpp@256,27.expected) | [validation.cpp@256,27.actual](validation.cpp@256,27.actual) | int main():256,27 | validation.cpp |
-| ❌ | std::vector\<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>\> | [validation.cpp@257,27.expected](validation.cpp@257,27.expected) | [validation.cpp@257,27.actual](validation.cpp@257,27.actual) | int main():257,27 | validation.cpp |
-| ❌ | std::array\<int, 4\> | [validation.cpp@267,27.expected](validation.cpp@267,27.expected) | [validation.cpp@267,27.actual](validation.cpp@267,27.actual) | int main():267,27 | validation.cpp |
-| ❌ | std::array\<int, 4\> | [validation.cpp@268,27.expected](validation.cpp@268,27.expected) | [validation.cpp@268,27.actual](validation.cpp@268,27.actual) | int main():268,27 | validation.cpp |
-| ❌ | std::array\<customer, 3\> | [validation.cpp@290,27.expected](validation.cpp@290,27.expected) | [validation.cpp@290,27.actual](validation.cpp@290,27.actual) | int main():290,27 | validation.cpp |
-| ❌ | std::array\<customer, 3\> | [validation.cpp@291,27.expected](validation.cpp@291,27.expected) | [validation.cpp@291,27.actual](validation.cpp@291,27.actual) | int main():291,27 | validation.cpp |
-| ❌ | std::array\<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>, 4\> | [validation.cpp@315,27.expected](validation.cpp@315,27.expected) | [validation.cpp@315,27.actual](validation.cpp@315,27.actual) | int main():315,27 | validation.cpp |
-| ❌ | std::array\<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>, 4\> | [validation.cpp@316,27.expected](validation.cpp@316,27.expected) | [validation.cpp@316,27.actual](validation.cpp@316,27.actual) | int main():316,27 | validation.cpp |
-| ❌ | text file | [./files/expected.txt](./files/expected.txt) | [./files/a.txt](./files/a.txt) | int main():321,28 | validation.cpp |
-| ❌ | text file | [./files/expected.txt](./files/expected.txt) | [./files/b.txt](./files/b.txt) | int main():322,28 | validation.cpp |
-| ❌ | text file | file not found | [./files/a.txt](./files/a.txt) | int main():324,28 | validation.cpp |
-| ❌ | text file | [./files/expected.txt](./files/expected.txt) | file not found | int main():325,28 | validation.cpp |
-| ❌ | binary file | [./files/expected.bin](./files/expected.bin) | [./files/a.bin](./files/a.bin) | int main():328,30 | validation.cpp |
-| ❌ | binary file | [./files/expected.bin](./files/expected.bin) | [./files/b.bin](./files/b.bin) | int main():329,30 | validation.cpp |
-| ❌ | binary file | file not found | [./files/a.bin](./files/a.bin) | int main():331,30 | validation.cpp |
-| ❌ | binary file | [./files/expected.bin](./files/expected.bin) | file not found | int main():332,30 | validation.cpp |
-| ❌ | char* | [validation.cpp@344,25.expected](validation.cpp@344,25.expected) | [validation.cpp@344,25.actual](validation.cpp@344,25.actual) | int main():344,25 | validation.cpp |
-| ❌ | std::runtime_error | to be thrown | different exception type was thrown | int main():346,58 | validation.cpp |
-| ❌ | std::runtime_error | to be thrown | nothing was thrown | int main():352,58 | validation.cpp |
-| ❌ | custom_exception | to be thrown | nothing was thrown | int main():365,56 | validation.cpp |
-| ❌ | custom_exception | to be thrown | different exception type was thrown | int main():372,56 | validation.cpp |
+| ❌ | bool | true | false | main:58,12 | validation.cpp |
+| ❌ | signed char | -128 | -28 | main:62,12 | validation.cpp |
+| ❌ | signed char | 0 | 8 | main:64,12 | validation.cpp |
+| ❌ | signed char | 127 | 105 | main:66,12 | validation.cpp |
+| ❌ | unsigned char | 0 | 1 | main:70,12 | validation.cpp |
+| ❌ | unsigned char | 255 | 224 | main:72,12 | validation.cpp |
+| ❌ | short | -32768 | -32668 | main:76,12 | validation.cpp |
+| ❌ | short | 0 | 42 | main:78,12 | validation.cpp |
+| ❌ | short | 32767 | 32756 | main:80,12 | validation.cpp |
+| ❌ | unsigned short | 0 | 1 | main:84,12 | validation.cpp |
+| ❌ | unsigned short | 65535 | 65091 | main:86,12 | validation.cpp |
+| ❌ | int | -2147483648 | -2147483548 | main:90,12 | validation.cpp |
+| ❌ | int | 0 | 42 | main:92,12 | validation.cpp |
+| ❌ | int | 2147483647 | 2147483646 | main:94,12 | validation.cpp |
+| ❌ | unsigned int | 0 | 1 | main:98,12 | validation.cpp |
+| ❌ | unsigned int | 4294967295 | 4294966851 | main:100,12 | validation.cpp |
+| ❌ | __int64 | -9223372036854775808 | -9223372036854775708 | main:104,12 | validation.cpp |
+| ❌ | __int64 | 0 | 42 | main:106,12 | validation.cpp |
+| ❌ | __int64 | 9223372036854775807 | 9223372036854774806 | main:108,12 | validation.cpp |
+| ❌ | unsigned __int64 | 0 | 1 | main:112,12 | validation.cpp |
+| ❌ | unsigned __int64 | 18446744073709551615 | 18446744073709551573 | main:114,12 | validation.cpp |
+| ❌ | char* | [validation.cpp@121,14.expected](validation.cpp@121,14.expected) | [validation.cpp@121,14.actual](validation.cpp@121,14.actual) | main:121,14 | validation.cpp |
+| ❌ | char* | [validation.cpp@122,14.expected](validation.cpp@122,14.expected) | [validation.cpp@122,14.actual](validation.cpp@122,14.actual) | main:122,14 | validation.cpp |
+| ❌ | char* | [validation.cpp@124,14.expected](validation.cpp@124,14.expected) | [validation.cpp@124,14.actual](validation.cpp@124,14.actual) | main:124,14 | validation.cpp |
+| ❌ | char* | [validation.cpp@132,14.expected](validation.cpp@132,14.expected) | [validation.cpp@132,14.actual](validation.cpp@132,14.actual) | main:132,14 | validation.cpp |
+| ❌ | char* | [validation.cpp@133,14.expected](validation.cpp@133,14.expected) | [validation.cpp@133,14.actual](validation.cpp@133,14.actual) | main:133,14 | validation.cpp |
+| ❌ | char* | [validation.cpp@142,14.expected](validation.cpp@142,14.expected) | [validation.cpp@142,14.actual](validation.cpp@142,14.actual) | main:142,14 | validation.cpp |
+| ❌ | char* | [validation.cpp@151,14.expected](validation.cpp@151,14.expected) | [validation.cpp@151,14.actual](validation.cpp@151,14.actual) | main:151,14 | validation.cpp |
+| ❌ | char* | [validation.cpp@152,14.expected](validation.cpp@152,14.expected) | [validation.cpp@152,14.actual](validation.cpp@152,14.actual) | main:152,14 | validation.cpp |
+| ❌ | std::vector\<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>>\> | [validation.cpp@157,14.expected](validation.cpp@157,14.expected) | [validation.cpp@157,14.actual](validation.cpp@157,14.actual) | main:157,14 | validation.cpp |
+| ❌ | int [] | [validation.cpp@166,14.expected](validation.cpp@166,14.expected) | [validation.cpp@166,14.actual](validation.cpp@166,14.actual) | main:166,14 | validation.cpp |
+| ❌ | int [] | [validation.cpp@167,14.expected](validation.cpp@167,14.expected) | [validation.cpp@167,14.actual](validation.cpp@167,14.actual) | main:167,14 | validation.cpp |
+| ❌ | struct customer [] | [validation.cpp@194,14.expected](validation.cpp@194,14.expected) | [validation.cpp@194,14.actual](validation.cpp@194,14.actual) | main:194,14 | validation.cpp |
+| ❌ | struct customer [] | [validation.cpp@195,14.expected](validation.cpp@195,14.expected) | [validation.cpp@195,14.actual](validation.cpp@195,14.actual) | main:195,14 | validation.cpp |
+| ❌ | struct customer [] | [validation.cpp@196,14.expected](validation.cpp@196,14.expected) | [validation.cpp@196,14.actual](validation.cpp@196,14.actual) | main:196,14 | validation.cpp |
+| ❌ | std::vector\<int\> | [validation.cpp@206,14.expected](validation.cpp@206,14.expected) | [validation.cpp@206,14.actual](validation.cpp@206,14.actual) | main:206,14 | validation.cpp |
+| ❌ | std::vector\<int\> | [validation.cpp@207,14.expected](validation.cpp@207,14.expected) | [validation.cpp@207,14.actual](validation.cpp@207,14.actual) | main:207,14 | validation.cpp |
+| ❌ | std::vector\<struct customer\> | [validation.cpp@234,14.expected](validation.cpp@234,14.expected) | [validation.cpp@234,14.actual](validation.cpp@234,14.actual) | main:234,14 | validation.cpp |
+| ❌ | std::vector\<struct customer\> | [validation.cpp@235,14.expected](validation.cpp@235,14.expected) | [validation.cpp@235,14.actual](validation.cpp@235,14.actual) | main:235,14 | validation.cpp |
+| ❌ | std::vector\<struct customer\> | [validation.cpp@236,14.expected](validation.cpp@236,14.expected) | [validation.cpp@236,14.actual](validation.cpp@236,14.actual) | main:236,14 | validation.cpp |
+| ❌ | std::vector\<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>>\> | [validation.cpp@261,14.expected](validation.cpp@261,14.expected) | [validation.cpp@261,14.actual](validation.cpp@261,14.actual) | main:261,14 | validation.cpp |
+| ❌ | std::vector\<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>>\> | [validation.cpp@262,14.expected](validation.cpp@262,14.expected) | [validation.cpp@262,14.actual](validation.cpp@262,14.actual) | main:262,14 | validation.cpp |
+| ❌ | std::array\<int, 4\> | [validation.cpp@280,14.expected](validation.cpp@280,14.expected) | [validation.cpp@280,14.actual](validation.cpp@280,14.actual) | main:280,14 | validation.cpp |
+| ❌ | std::array\<int, 4\> | [validation.cpp@281,14.expected](validation.cpp@281,14.expected) | [validation.cpp@281,14.actual](validation.cpp@281,14.actual) | main:281,14 | validation.cpp |
+| ❌ | std::array\<struct customer, 3\> | [validation.cpp@303,14.expected](validation.cpp@303,14.expected) | [validation.cpp@303,14.actual](validation.cpp@303,14.actual) | main:303,14 | validation.cpp |
+| ❌ | std::array\<struct customer, 3\> | [validation.cpp@304,14.expected](validation.cpp@304,14.expected) | [validation.cpp@304,14.actual](validation.cpp@304,14.actual) | main:304,14 | validation.cpp |
+| ❌ | std::array\<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>>, 4\> | [validation.cpp@328,14.expected](validation.cpp@328,14.expected) | [validation.cpp@328,14.actual](validation.cpp@328,14.actual) | main:328,14 | validation.cpp |
+| ❌ | std::array\<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>>, 4\> | [validation.cpp@329,14.expected](validation.cpp@329,14.expected) | [validation.cpp@329,14.actual](validation.cpp@329,14.actual) | main:329,14 | validation.cpp |
+| ❌ | text file | [./files/expected.txt](./files/expected.txt) | [./files/a.txt](./files/a.txt) | main:334,12 | validation.cpp |
+| ❌ | text file | [./files/expected.txt](./files/expected.txt) | [./files/b.txt](./files/b.txt) | main:335,12 | validation.cpp |
+| ❌ | text file | file not found | [./files/a.txt](./files/a.txt) | main:337,12 | validation.cpp |
+| ❌ | text file | [./files/expected.txt](./files/expected.txt) | file not found | main:338,12 | validation.cpp |
+| ❌ | binary file | [./files/expected.bin](./files/expected.bin) | [./files/a.bin](./files/a.bin) | main:341,12 | validation.cpp |
+| ❌ | binary file | [./files/expected.bin](./files/expected.bin) | [./files/b.bin](./files/b.bin) | main:342,12 | validation.cpp |
+| ❌ | binary file | file not found | [./files/a.bin](./files/a.bin) | main:344,12 | validation.cpp |
+| ❌ | binary file | [./files/expected.bin](./files/expected.bin) | file not found | main:345,12 | validation.cpp |
+| ❌ | char* | [validation.cpp@357,14.expected](validation.cpp@357,14.expected) | [validation.cpp@357,14.actual](validation.cpp@357,14.actual) | main:357,14 | validation.cpp |
+| ❌ | class std::runtime_error | to be thrown | different exception type was thrown | main:359,25 | validation.cpp |
+| ❌ | class std::runtime_error | to be thrown | nothing was thrown | main:365,25 | validation.cpp |
+| ❌ | struct custom_exception | to be thrown | nothing was thrown | main:378,25 | validation.cpp |
+| ❌ | struct custom_exception | to be thrown | different exception type was thrown | main:385,25 | validation.cpp |
 
 | | Type | Expected | Location (fn:ln,col) | Source File |
 | - | - | - | - | - |
-| ✅ | bool | true | int main():57,23 | validation.cpp |
-| ✅ | signed char | -128 | int main():61,23 | validation.cpp |
-| ✅ | signed char | 0 | int main():63,23 | validation.cpp |
-| ✅ | signed char | 127 | int main():65,23 | validation.cpp |
-| ✅ | unsigned char | 0 | int main():69,24 | validation.cpp |
-| ✅ | unsigned char | 255 | int main():71,24 | validation.cpp |
-| ✅ | short | -32768 | int main():75,24 | validation.cpp |
-| ✅ | short | 0 | int main():77,24 | validation.cpp |
-| ✅ | short | 32767 | int main():79,24 | validation.cpp |
-| ✅ | unsigned short | 0 | int main():83,25 | validation.cpp |
-| ✅ | unsigned short | 65535 | int main():85,25 | validation.cpp |
-| ✅ | int | -2147483648 | int main():89,24 | validation.cpp |
-| ✅ | int | 0 | int main():91,24 | validation.cpp |
-| ✅ | int | 2147483647 | int main():93,24 | validation.cpp |
-| ✅ | unsigned int | 0 | int main():97,25 | validation.cpp |
-| ✅ | unsigned int | 4294967295 | int main():99,25 | validation.cpp |
-| ✅ | long | -9223372036854775808 | int main():103,24 | validation.cpp |
-| ✅ | long | 0 | int main():105,24 | validation.cpp |
-| ✅ | long | 9223372036854775807 | int main():107,24 | validation.cpp |
-| ✅ | unsigned long | 0 | int main():111,25 | validation.cpp |
-| ✅ | unsigned long | 18446744073709551615 | int main():113,25 | validation.cpp |
-| ✅ | char* | len=12 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>Hello\nworl</span> *... 2 more* | int main():123,25 | validation.cpp |
-| ✅ | char* | len=26 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>abcdefghij</span> *... 16 more* | int main():125,25 | validation.cpp |
-| ✅ | char* | len=26 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>Testing co</span> *... 16 more* | int main():134,27 | validation.cpp |
-| ✅ | char* | len=26 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>Testing\0co</span> *... 16 more* | int main():143,27 | validation.cpp |
-| ✅ | char* | len=10 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>\`Backtick\`</span> | int main():149,25 | validation.cpp |
-| ✅ | char* | len=10 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>\`Backtick\`</span> | int main():150,27 | validation.cpp |
-| ✅ | int [] | sz=4 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>0</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>1</span>,  *... 2 more* __]__ | int main():163,24 | validation.cpp |
-| ✅ | customer [] | sz=3 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>(Alice Smith, 22)</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>(Joe Schmoe, 100)</span>,  *... 1 more* __]__ | int main():192,24 | validation.cpp |
-| ✅ | std::vector\<int\> | sz=4 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>0</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>1</span>,  *... 2 more* __]__ | int main():203,27 | validation.cpp |
-| ✅ | std::vector\<customer\> | sz=3 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>(Alice Smith, 22)</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>(Joe Schmoe, 100)</span>,  *... 1 more* __]__ | int main():232,27 | validation.cpp |
-| ✅ | std::vector\<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>\> | sz=4 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>Testing</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>code</span>,  *... 2 more* __]__ | int main():258,27 | validation.cpp |
-| ✅ | std::array\<int, 4\> | sz=4 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>0</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>1</span>,  *... 2 more* __]__ | int main():269,27 | validation.cpp |
-| ✅ | std::array\<customer, 3\> | sz=3 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>(Alice Smith, 22)</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>(Joe Schmoe, 100)</span>,  *... 1 more* __]__ | int main():292,27 | validation.cpp |
-| ✅ | std::array\<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char>>, 4\> | sz=4 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>Testing</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>code</span>,  *... 2 more* __]__ | int main():317,27 | validation.cpp |
-| ✅ | text file | [./files/expected.txt](./files/expected.txt) | int main():323,28 | validation.cpp |
-| ✅ | binary file | [./files/expected.bin](./files/expected.bin) | int main():330,30 | validation.cpp |
-| ✅ | std::runtime_error | to be thrown | int main():338,58 | validation.cpp |
-| ✅ | char* | len=23 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>some expla</span> *... 13 more* | int main():343,25 | validation.cpp |
-| ✅ | custom_exception | to be thrown | int main():359,56 | validation.cpp |
-| ✅ | char* | len=22 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>Something </span> *... 12 more* | int main():363,25 | validation.cpp |
+| ✅ | bool | true | main:57,12 | validation.cpp |
+| ✅ | signed char | -128 | main:61,12 | validation.cpp |
+| ✅ | signed char | 0 | main:63,12 | validation.cpp |
+| ✅ | signed char | 127 | main:65,12 | validation.cpp |
+| ✅ | unsigned char | 0 | main:69,12 | validation.cpp |
+| ✅ | unsigned char | 255 | main:71,12 | validation.cpp |
+| ✅ | short | -32768 | main:75,12 | validation.cpp |
+| ✅ | short | 0 | main:77,12 | validation.cpp |
+| ✅ | short | 32767 | main:79,12 | validation.cpp |
+| ✅ | unsigned short | 0 | main:83,12 | validation.cpp |
+| ✅ | unsigned short | 65535 | main:85,12 | validation.cpp |
+| ✅ | int | -2147483648 | main:89,12 | validation.cpp |
+| ✅ | int | 0 | main:91,12 | validation.cpp |
+| ✅ | int | 2147483647 | main:93,12 | validation.cpp |
+| ✅ | unsigned int | 0 | main:97,12 | validation.cpp |
+| ✅ | unsigned int | 4294967295 | main:99,12 | validation.cpp |
+| ✅ | __int64 | -9223372036854775808 | main:103,12 | validation.cpp |
+| ✅ | __int64 | 0 | main:105,12 | validation.cpp |
+| ✅ | __int64 | 9223372036854775807 | main:107,12 | validation.cpp |
+| ✅ | unsigned __int64 | 0 | main:111,12 | validation.cpp |
+| ✅ | unsigned __int64 | 18446744073709551615 | main:113,12 | validation.cpp |
+| ✅ | char* | len=12 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>Hello\nworld!</span> | main:123,14 | validation.cpp |
+| ✅ | char* | len=26 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>abcdefghijklmno</span> *... 11 more* | main:125,14 | validation.cpp |
+| ✅ | char* | len=26 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>Testing code is</span> *... 11 more* | main:134,14 | validation.cpp |
+| ✅ | char* | len=26 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>Testing\0code\0is</span> *... 11 more* | main:143,14 | validation.cpp |
+| ✅ | char* | len=10 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>\`Backtick\`</span> | main:149,14 | validation.cpp |
+| ✅ | char* | len=10 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>\`Backtick\`</span> | main:150,14 | validation.cpp |
+| ✅ | std::vector\<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>>\> | sz=1 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>\`Backtick\`</span>, __]__ | main:156,14 | validation.cpp |
+| ✅ | int [] | sz=4 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>0</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>1</span>,  *... 2 more* __]__ | main:168,14 | validation.cpp |
+| ✅ | struct customer [] | sz=3 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>(Alice Smith, 22)</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>(Joe Schmoe, 100)</span>,  *... 1 more* __]__ | main:197,14 | validation.cpp |
+| ✅ | std::vector\<int\> | sz=4 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>0</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>1</span>,  *... 2 more* __]__ | main:208,14 | validation.cpp |
+| ✅ | std::vector\<struct customer\> | sz=3 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>(Alice Smith, 22)</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>(Joe Schmoe, 100)</span>,  *... 1 more* __]__ | main:237,14 | validation.cpp |
+| ✅ | std::vector\<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>>\> | sz=4 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>Testing</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>code</span>,  *... 2 more* __]__ | main:263,14 | validation.cpp |
+| ✅ | std::vector\<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>>\> | sz=4 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>Testing\n</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>code\n</span>,  *... 2 more* __]__ | main:271,14 | validation.cpp |
+| ✅ | std::array\<int, 4\> | sz=4 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>0</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>1</span>,  *... 2 more* __]__ | main:282,14 | validation.cpp |
+| ✅ | std::array\<struct customer, 3\> | sz=3 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>(Alice Smith, 22)</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>(Joe Schmoe, 100)</span>,  *... 1 more* __]__ | main:305,14 | validation.cpp |
+| ✅ | std::array\<class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>>, 4\> | sz=4 __[__ <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 0'>Testing</span>, <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;' title='index 1'>code</span>,  *... 2 more* __]__ | main:330,14 | validation.cpp |
+| ✅ | text file | [./files/expected.txt](./files/expected.txt) | main:336,12 | validation.cpp |
+| ✅ | binary file | [./files/expected.bin](./files/expected.bin) | main:343,12 | validation.cpp |
+| ✅ | class std::runtime_error | to be thrown | main:351,25 | validation.cpp |
+| ✅ | char* | len=23 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>some explanator</span> *... 8 more* | main:356,14 | validation.cpp |
+| ✅ | struct custom_exception | to be thrown | main:372,25 | validation.cpp |
+| ✅ | char* | len=22 <span style='border: 1px solid darkgray;font-family: monospace;padding: 2px;white-space: pre-wrap;'>Something bad h</span> *... 7 more* | main:376,14 | validation.cpp |
 
