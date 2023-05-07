@@ -15,6 +15,8 @@ size_t len(Ty (&)[Length])
 
 int main()
 {
+  ntest::config::set_show_column_numbers(false);
+
   size_t observed_pass_cnt = 0, observed_fail_cnt = 0;
 
   auto const ensure_passed = [&observed_pass_cnt](
@@ -268,7 +270,16 @@ int main()
         "is\n",
         "important!\n",
       };
+      std::vector<std::string> const d {
+        "`Testing`",
+        "`code`",
+        "`is`",
+        "`important!`",
+      };
+
       ntest::assert_stdvec(c, c); ensure_passed(); // check preview has \n escaped
+      ntest::assert_stdvec(expected, c); ensure_failed(); // check .actual has \n escaped
+      ntest::assert_stdvec(expected, d); ensure_failed(); // check .actual has does not escape `
     }
 
     // std::array<int>
