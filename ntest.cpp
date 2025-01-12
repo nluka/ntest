@@ -13,6 +13,11 @@
 # include <cxxabi.h>
 #endif
 
+#ifdef _WIN32
+# undef min
+# undef max
+#endif
+
 #include "ntest.hpp"
 
 namespace fs = std::filesystem;
@@ -94,15 +99,16 @@ special_chars_table_t const &ntest::internal::special_chars_serial_file()
 special_chars_table_t const &ntest::internal::special_chars_markdown_preview()
 {
   static special_chars_table_t const s_special_markdown_chars {
-    { '\a', 'a' },
-    { '\b', 'b' },
-    { '\f', 'f' },
-    { '\n', 'n' },
-    { '\r', 'r' },
-    { '\t', 't' },
-    { '\v', 'v' },
-    { '\0', '0' },
-    { '`', '`' },
+    { '\a', 'a'  },
+    { '\b', 'b'  },
+    { '\f', 'f'  },
+    { '\n', 'n'  },
+    { '\r', 'r'  },
+    { '\t', 't'  },
+    { '\v', 'v'  },
+    { '\0', '0'  },
+    { '`' , '`'  },
+    { '\\', '\\' }, // to prevent html tags from being escaped by user data
   };
   return s_special_markdown_chars;
 }
@@ -390,6 +396,12 @@ void serialize_str_preview(
   size_t const len,
   stringstream &ss)
 {
+  if (str == nullptr)
+  {
+    ss << "nullptr";
+    return;
+  }
+
   ss << "len=" << len;
 
   if (len == 0)
@@ -420,8 +432,8 @@ bool ntest::assert_cstr(
   ntest::str_opts const &options,
   source_location const loc)
 {
-  size_t const expected_len = strlen(expected);
-  size_t const actual_len = strlen(actual);
+  size_t const expected_len = expected ? strlen(expected) : 0;
+  size_t const actual_len = actual ? strlen(actual) : 0;
   return ntest::assert_cstr(expected, expected_len, actual, actual_len, options, loc);
 }
 
@@ -439,10 +451,13 @@ bool ntest::assert_cstr(
   ntest::str_opts const &options,
   source_location const loc)
 {
-  bool const passed =
-    (expected_len == actual_len) &&
-    (strcmp(expected, actual) == 0)
-  ;
+  bool passed = true;
+  if ( expected_len != actual_len ||
+       ((!expected && actual) || (expected && !actual)) ||
+       (expected && actual && strcmp(expected, actual) != 0) )
+  {
+    passed = false;
+  }
 
   stringstream serialized_vals{};
   serialized_vals << "char*" << '\0';
@@ -456,8 +471,8 @@ bool ntest::assert_cstr(
   else // failed
   {
     string const
-      expected_path = internal::make_serialized_file_path(loc, "expected"),
-      actual_path = internal::make_serialized_file_path(loc, "actual");
+      expected_path = expected == nullptr ? "" : internal::make_serialized_file_path(loc, "expected"),
+      actual_path = actual == nullptr ? "" : internal::make_serialized_file_path(loc, "actual");
 
     auto const write_file = [&options](
       string const &path, char const *str, size_t const len)
@@ -465,19 +480,34 @@ bool ntest::assert_cstr(
       fstream file(path, std::ios::out);
       internal::throw_if_file_not_open(file, path.c_str());
 
-      if (options.escape_special_chars)
+      if (str == nullptr)
+        file << "nullptr";
+      else if (options.escape_special_chars)
         print_escaped_string_to_ostream(
           str, len, file, internal::special_chars_serial_file());
       else
         file << str;
     };
 
-    write_file(expected_path, expected, expected_len);
-    write_file(actual_path, actual, actual_len);
+    if (expected_path != "")
+    {
+      write_file(expected_path, expected, expected_len);
+      serialized_vals << '[' << expected_path << "](" << expected_path << ')' << '\0';
+    }
+    else
+    {
+      serialized_vals << "nullptr" << '\0';
+    }
 
-    serialized_vals
-      << '[' << expected_path << "](" << expected_path << ')' << '\0'
-      << '[' << actual_path << "](" << actual_path << ')' << '\0';
+    if (actual_path != "")
+    {
+      write_file(actual_path, actual, actual_len);
+      serialized_vals << '[' << actual_path << "](" << actual_path << ')' << '\0';
+    }
+    else
+    {
+      serialized_vals << "nullptr" << '\0';
+    }
 
     internal::register_failed_assertion(std::move(serialized_vals), loc);
   }
@@ -503,8 +533,9 @@ string extract_text_file_contents(
   fstream file(path, std::ios::in);
   ntest::internal::throw_if_file_not_open(file, path.c_str());
 
-  auto const file_size = fs::file_size(path);
-  assert(file_size <= std::numeric_limits<std::streamsize>::max());
+  uintmax_t const file_size = fs::file_size(path);
+  uintmax_t const max_streamsize = (uintmax_t)std::numeric_limits<std::streamsize>::max();
+  assert(file_size <= max_streamsize);
 
   string contents(file_size, '\0');
   file.read(contents.data(), static_cast<std::streamsize>(file_size));
@@ -524,8 +555,9 @@ vector<uint8_t> extract_binary_file_contents(string const &path)
   fstream file(path, std::ios::in | std::ios::binary);
   ntest::internal::throw_if_file_not_open(file, path.c_str());
 
-  auto const file_size = fs::file_size(path);
-  assert(file_size <= std::numeric_limits<std::streamsize>::max());
+  uintmax_t const file_size = fs::file_size(path);
+  uintmax_t const max_streamsize = (uintmax_t)std::numeric_limits<std::streamsize>::max();
+  assert(file_size <= max_streamsize);
 
   std::vector<uint8_t> vec(file_size);
 
